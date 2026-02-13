@@ -1,0 +1,861 @@
+
+{% load static %}
+
+
+
+{% block extra_css %}
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<style>
+    :root {
+        --sidebar-width: 280px;
+        --header-height: 70px;
+        --sidebar-bg: #0f172a;
+        --sidebar-hover: #1e293b;
+        --sidebar-active: #FF6B00;
+        --card-bg: #ffffff;
+        --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        --border-color: #eef2f7;
+        --text-primary: #2d3748;
+        --text-secondary: #718096;
+        --text-muted: #a0aec0;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --secondary: #FF6B00;
+        --secondary-dark: #e55a00;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f7fafc; color: var(--text-primary); overflow-x: hidden; }
+    .dashboard-layout { display: flex; min-height: 100vh; }
+    .dashboard-sidebar { width: var(--sidebar-width); background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; position: fixed; height: 100vh; overflow-y: auto; transition: transform 0.3s ease; z-index: 1000; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+    .sidebar-header { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
+    .sidebar-logo { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .sidebar-logo span { font-weight: 700; font-size: 1.5rem; color: white; }
+    .sidebar-logo span span { color: var(--secondary); }
+    .sidebar-nav { flex: 1; padding: 1.5rem 0; }
+    .nav-section { margin-bottom: 1.5rem; }
+    .nav-section-title { padding: 0.5rem 1.5rem; color: rgba(255,255,255,0.5); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+    .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1.5rem; color: rgba(255,255,255,0.8); text-decoration: none; transition: all 0.2s ease; border-left: 3px solid transparent; }
+    .nav-item:hover { background: var(--sidebar-hover); color: white; border-left-color: var(--secondary); }
+    .nav-item.active { background: rgba(255,107,0,0.1); color: var(--secondary); border-left-color: var(--secondary); }
+    .nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
+    .nav-badge { margin-left: auto; background: var(--secondary); color: white; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 10px; min-width: 20px; text-align: center; }
+    .sidebar-footer { padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto; }
+    .user-profile { display: flex; align-items: center; gap: 0.75rem; }
+    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--secondary), var(--secondary-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
+    .user-info h4 { font-size: 0.9rem; color: white; margin-bottom: 0.125rem; }
+    .user-info p { font-size: 0.75rem; color: rgba(255,255,255,0.7); }
+    .dashboard-main { flex: 1; margin-left: var(--sidebar-width); min-height: 100vh; transition: margin-left 0.3s ease; }
+    .dashboard-topbar { height: var(--header-height); background: white; border-bottom: 1px solid var(--border-color); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .topbar-left { display: flex; align-items: center; gap: 1rem; }
+    .mobile-toggle { display: none; background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; padding: 0.5rem; transition: color 0.2s ease; }
+    .mobile-toggle:hover { color: var(--text-primary); }
+    .topbar-logo { display: none; }
+    .page-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); }
+    .topbar-search { flex: 1; max-width: 400px; position: relative; }
+    .search-input { width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid var(--border-color); border-radius: 0.5rem; font-size: 0.9rem; background: #f8fafc; transition: all 0.2s ease; }
+    .search-input:focus { outline: none; border-color: var(--secondary); background: white; box-shadow: 0 0 0 3px rgba(255,107,0,0.1); }
+    .search-icon { position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .topbar-actions { display: flex; align-items: center; gap: 1rem; }
+    .notifications { position: relative; }
+    .notification-btn { background: none; border: none; color: var(--text-secondary); font-size: 1.25rem; cursor: pointer; padding: 0.5rem; position: relative; transition: color 0.2s ease; }
+    .notification-btn:hover { color: var(--text-primary); }
+    .notification-badge { position: absolute; top: 0; right: 0; background: var(--danger); color: white; font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+    .dashboard-content { padding: 2rem; }
+    .content-header { margin-bottom: 2rem; background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
+    .content-header h1 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; }
+    .content-header p { color: var(--text-secondary); font-size: 0.95rem; }
+    .date-badge { background: rgba(255,107,0,0.1); color: var(--secondary); padding: 0.5rem 1.25rem; border-radius: 2rem; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .stat-card { background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); transition: all 0.2s ease; display: flex; flex-direction: column; }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+    .stat-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .stat-card-title { color: var(--text-secondary); font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-icon-wrapper { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white; }
+    .stat-icon-wrapper.primary { background: linear-gradient(135deg, var(--secondary), var(--secondary-dark)); }
+    .stat-icon-wrapper.success { background: linear-gradient(135deg, var(--success), #34d399); }
+    .stat-icon-wrapper.info { background: linear-gradient(135deg, var(--info), #60a5fa); }
+    .stat-icon-wrapper.warning { background: linear-gradient(135deg, var(--warning), #fbbf24); }
+    .stat-value { font-size: 2rem; font-weight: 700; color: var(--text-primary); line-height: 1; margin-bottom: 0.25rem; }
+    .stat-subtitle { color: var(--text-muted); font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; }
+    .filters-card { background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); margin-bottom: 2rem; }
+    .filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
+    .filter-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .filter-label { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
+    .filter-label i { color: var(--secondary); }
+    .filter-select, .filter-input { padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; font-size: 0.95rem; background: white; transition: all 0.2s ease; }
+    .filter-select:focus, .filter-input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(255,107,0,0.1); }
+    .filter-actions { display: flex; gap: 1rem; justify-content: flex-end; }
+    .btn-primary { background: var(--secondary); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s ease; cursor: pointer; font-size: 0.95rem; }
+    .btn-primary:hover { background: var(--secondary-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,107,0,0.2); }
+    .btn-secondary { background: #f8fafc; color: var(--text-primary); border: 1px solid var(--border-color); padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 500; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s ease; cursor: pointer; font-size: 0.95rem; }
+    .btn-secondary:hover { background: #eef2f7; transform: translateY(-1px); }
+    .btn-outline { padding: 0.5rem 1.25rem; border: 1px solid var(--border-color); border-radius: 0.5rem; color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: all 0.2s ease; background: white; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .btn-outline:hover { background: var(--secondary); color: white; border-color: var(--secondary); }
+    .btn-danger { background: var(--danger); color: white; border: none; padding: 0.375rem 0.75rem; border-radius: 0.5rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+    .btn-danger:hover { background: #dc2626; transform: translateY(-1px); }
+    .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
+    .badge { padding: 0.25rem 0.75rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 600; display: inline-block; }
+    .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+    .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+    .badge-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+    .badge-info { background: rgba(59, 130, 246, 0.1); color: var(--info); }
+    .card { background: white; border-radius: 0.75rem; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); margin-bottom: 1.5rem; overflow: hidden; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; padding: 1.5rem; border-bottom: 1px solid var(--border-color); background: white; }
+    .card-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 0.75rem; margin: 0; }
+    .card-title i { color: var(--secondary); }
+    .classes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .class-card { background: white; border-radius: 0.75rem; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); overflow: hidden; transition: all 0.2s ease; display: flex; flex-direction: column; }
+    .class-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.1); }
+    .class-image { height: 140px; background: linear-gradient(135deg, var(--secondary), var(--secondary-dark)); position: relative; display: flex; align-items: center; justify-content: center; }
+    .class-image i { font-size: 3.5rem; color: rgba(255,255,255,0.3); }
+    .class-category { position: absolute; top: 1rem; right: 1rem; background: rgba(0,0,0,0.6); color: white; padding: 0.25rem 1rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; backdrop-filter: blur(4px); }
+    .class-content { padding: 1.5rem; flex: 1; }
+    .class-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; }
+    .class-name { font-size: 1.25rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem; }
+    .class-trainer { display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.875rem; }
+    .class-trainer i { color: var(--secondary); width: 16px; }
+    .class-badge { padding: 0.25rem 0.75rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
+    .class-badge.beginner { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+    .class-badge.intermediate { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+    .class-badge.advanced { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+    .class-details { margin: 1rem 0; display: flex; flex-direction: column; gap: 0.5rem; }
+    .class-detail-item { display: flex; align-items: center; gap: 0.75rem; color: var(--text-secondary); font-size: 0.875rem; }
+    .class-detail-item i { width: 18px; color: var(--secondary); font-size: 0.875rem; }
+    .class-capacity { margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border-color); }
+    .capacity-bar { height: 6px; background: var(--border-color); border-radius: 3px; overflow: hidden; margin-bottom: 0.5rem; }
+    .capacity-fill { height: 100%; background: linear-gradient(90deg, var(--secondary), var(--secondary-dark)); border-radius: 3px; transition: width 0.3s ease; }
+    .capacity-text { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.5rem; }
+    .class-footer { padding: 1.5rem; border-top: 1px solid var(--border-color); background: #f8fafc; display: flex; align-items: center; justify-content: space-between; }
+    .action-buttons { display: flex; gap: 0.5rem; }
+    .bulk-actions { display: flex; gap: 0.5rem; margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.5rem; align-items: center; }
+    .select-all { display: flex; align-items: center; gap: 0.5rem; margin-right: 1rem; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; }
+    .modal.active { display: flex; }
+    .modal-content { background: white; border-radius: 0.75rem; padding: 2rem; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
+    .modal-header h2 { font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin: 0; }
+    .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); }
+    .modal-close:hover { color: var(--danger); }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-label { display: block; font-size: 0.875rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; }
+    .form-label i { color: var(--secondary); margin-right: 0.5rem; }
+    .form-control { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; font-size: 0.95rem; background: white; transition: all 0.2s ease; }
+    .form-control:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(255,107,0,0.1); }
+    .checkbox-label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+    .checkbox-label input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--secondary); }
+    .pagination { display: flex; justify-content: center; align-items: center; gap: 0.5rem; padding: 1.5rem; }
+    .pagination-btn { padding: 0.5rem 1rem; border: 1px solid var(--border-color); background: white; color: var(--text-secondary); border-radius: 0.5rem; text-decoration: none; transition: all 0.2s ease; }
+    .pagination-btn:hover { background: var(--secondary); color: white; border-color: var(--secondary); }
+    .pagination-btn.active { background: var(--secondary); color: white; border-color: var(--secondary); }
+    .empty-state { text-align: center; padding: 4rem 2rem; background: white; border-radius: 0.75rem; border: 1px solid var(--border-color); grid-column: 1 / -1; }
+    .empty-state i { font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem; opacity: 0.5; }
+    .empty-state h3 { font-size: 1.25rem; color: var(--text-primary); margin-bottom: 0.5rem; }
+    .empty-state p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem; }
+    @media (max-width: 1024px) { .dashboard-sidebar { transform: translateX(-100%); } .dashboard-sidebar.active { transform: translateX(0); } .dashboard-main { margin-left: 0; } .mobile-toggle { display: block; } .topbar-logo { display: block; } .classes-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) { .dashboard-content { padding: 1rem; } .dashboard-topbar { padding: 0 1rem; } .content-header { flex-direction: column; align-items: flex-start; gap: 1rem; } .filters-grid { grid-template-columns: 1fr; } .filter-actions { flex-direction: column; } .classes-grid { grid-template-columns: 1fr; } .topbar-search { display: none; } .bulk-actions { flex-direction: column; align-items: flex-start; } .action-buttons { flex-direction: column; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    <!-- Sidebar - Admin Version -->
+    <div class="dashboard-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <span>2more<span>Fitness</span></span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Main</div>
+                <a href="{% url 'admin_dashboard' %}" class="nav-item">
+                    <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
+                </a>
+                <a href="{% url 'admin_member_list' %}" class="nav-item">
+                    <i class="fas fa-users"></i> <span>Members</span>
+                    <span class="nav-badge">{{ total_members|default:"0" }}</span>
+                </a>
+                <a href="{% url 'admin_class_list' %}" class="nav-item active">
+                    <i class="fas fa-calendar-alt"></i> <span>Classes</span>
+                </a>
+               
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Account</div>
+                <a href="{% url 'logout' %}" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">{{ user.get_full_name|default:user.username|first|upper }}</div>
+                <div class="user-info">
+                    <h4>{{ user.get_full_name|default:user.username }}</h4>
+                    <p>Administrator</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <div class="dashboard-topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
+                <div class="topbar-logo">
+                    <span style="font-weight: 700; font-size: 1.2rem; color: var(--text-primary);">
+                        2more<span style="color: #FF6B00;">Fitness</span>
+                    </span>
+                </div>
+                <span class="page-title">Classes Management</span>
+            </div>
+            
+            <div class="topbar-search">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search classes..." value="{{ current_filters.search|default:'' }}">
+            </div>
+
+            <div class="topbar-actions">
+                <div class="notifications">
+                    <button class="notification-btn"><i class="fas fa-bell"></i><span class="notification-badge">3</span></button>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">{{ user.get_full_name|default:user.username|first|upper }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <!-- Header with Date Badge -->
+            <div class="content-header">
+                <div>
+                    <h1>Classes Management</h1>
+                    <p>Manage gym classes and schedules - Edit, Delete, View Details</p>
+                </div>
+                <div class="date-badge"><i class="far fa-calendar-alt"></i> {% now "l, F d, Y" %}</div>
+            </div>
+
+            <!-- Info Card - Django Admin Redirect for ADD ONLY -->
+            <div class="card" style="background: #f0f9ff; border: 1px solid #bae6fd; margin-bottom: 1.5rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 0.5rem;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(59, 130, 246, 0.1); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-shield-alt" style="color: #3b82f6; font-size: 1.5rem;"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <h4 style="font-weight: 600; margin-bottom: 0.25rem; color: #0369a1;">Creating New Classes</h4>
+                        <p style="color: #075985; font-size: 0.9rem;">Class creation is restricted to superusers only. Please use the Django Admin panel to add new classes.</p>
+                    </div>
+                    <a href="/admin/classes/gymclass/add/" class="btn-primary" target="_blank" style="white-space: nowrap;">
+                        <i class="fas fa-external-link-alt"></i> Go to Django Admin
+                    </a>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">Total Classes</span>
+                        <div class="stat-icon-wrapper primary"><i class="fas fa-calendar-alt"></i></div>
+                    </div>
+                    <div class="stat-value">{{ total_classes|default:"0" }}</div>
+                    <div class="stat-subtitle"><i class="fas fa-check-circle"></i> {{ active_classes|default:"0" }} active</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">Total Enrolled</span>
+                        <div class="stat-icon-wrapper success"><i class="fas fa-users"></i></div>
+                    </div>
+                    <div class="stat-value">{{ total_enrolled|default:"0" }}</div>
+                    <div class="stat-subtitle"><i class="fas fa-percentage"></i> {{ avg_capacity|default:"0" }}% capacity</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">Trainers</span>
+                        <div class="stat-icon-wrapper info"><i class="fas fa-user-tie"></i></div>
+                    </div>
+                    <div class="stat-value">{{ trainers|length|default:"0" }}</div>
+                    <div class="stat-subtitle"><i class="fas fa-chalkboard-teacher"></i> Active trainers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">Quick Actions</span>
+                        <div class="stat-icon-wrapper warning"><i class="fas fa-bolt"></i></div>
+                    </div>
+                    <div class="stat-value">
+                        <!-- CHANGED: Add Class button now redirects to Django Admin -->
+                        <a href="/admin/classes/gymclass/add/" class="btn-primary btn-sm" target="_blank">
+                            <i class="fas fa-plus-circle"></i> Add Class
+                        </a>
+                    </div>
+                    <div class="stat-subtitle"><i class="fas fa-shield-alt"></i> Superuser only</div>
+                </div>
+            </div>
+
+            <!-- Filters Card -->
+            <div class="filters-card">
+                <form method="get" id="filterForm">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label class="filter-label"><i class="fas fa-filter"></i> Difficulty</label>
+                            <select name="difficulty" class="filter-select" onchange="this.form.submit()">
+                                <option value="">All Levels</option>
+                                <option value="beginner" {% if current_filters.difficulty == 'beginner' %}selected{% endif %}>Beginner</option>
+                                <option value="intermediate" {% if current_filters.difficulty == 'intermediate' %}selected{% endif %}>Intermediate</option>
+                                <option value="advanced" {% if current_filters.difficulty == 'advanced' %}selected{% endif %}>Advanced</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label"><i class="fas fa-user-tie"></i> Trainer</label>
+                            <select name="trainer" class="filter-select" onchange="this.form.submit()">
+                                <option value="">All Trainers</option>
+                                {% for trainer in trainers %}
+                                <option value="{{ trainer.id }}" {% if current_filters.trainer == trainer.id|stringformat:"s" %}selected{% endif %}>{{ trainer.user.get_full_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label"><i class="fas fa-clock"></i> Day</label>
+                            <select name="day" class="filter-select" onchange="this.form.submit()">
+                                <option value="">Any Day</option>
+                                <option value="0" {% if current_filters.day == '0' %}selected{% endif %}>Monday</option>
+                                <option value="1" {% if current_filters.day == '1' %}selected{% endif %}>Tuesday</option>
+                                <option value="2" {% if current_filters.day == '2' %}selected{% endif %}>Wednesday</option>
+                                <option value="3" {% if current_filters.day == '3' %}selected{% endif %}>Thursday</option>
+                                <option value="4" {% if current_filters.day == '4' %}selected{% endif %}>Friday</option>
+                                <option value="5" {% if current_filters.day == '5' %}selected{% endif %}>Saturday</option>
+                                <option value="6" {% if current_filters.day == '6' %}selected{% endif %}>Sunday</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label"><i class="fas fa-hourglass-half"></i> Duration</label>
+                            <select name="duration" class="filter-select" onchange="this.form.submit()">
+                                <option value="">Any Duration</option>
+                                <option value="30" {% if current_filters.duration == '30' %}selected{% endif %}>30 mins</option>
+                                <option value="45" {% if current_filters.duration == '45' %}selected{% endif %}>45 mins</option>
+                                <option value="60" {% if current_filters.duration == '60' %}selected{% endif %}>60 mins</option>
+                                <option value="90" {% if current_filters.duration == '90' %}selected{% endif %}>90 mins</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-actions">
+                        <a href="{% url 'admin_class_list' %}" class="btn-secondary"><i class="fas fa-redo"></i> Reset Filters</a>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Bulk Actions -->
+            <div class="bulk-actions" id="bulkActions" style="display: none;">
+                <div class="select-all">
+                    <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()">
+                    <label for="selectAllCheckbox">Select All</label>
+                </div>
+                <span id="selectedCount">0</span> classes selected
+                <button class="btn-danger btn-sm" onclick="confirmBulkDelete()"><i class="fas fa-trash-alt"></i> Delete Selected</button>
+                <button class="btn-secondary btn-sm" onclick="clearSelection()"><i class="fas fa-times"></i> Clear</button>
+            </div>
+
+            <!-- Classes Grid - ITO ANG MAG-DISPLAY NG LAHAT NG CLASS NA GINAWA MO SA DJANGO ADMIN -->
+            {% if classes %}
+            <div class="classes-grid">
+                {% for class in classes %}
+                <div class="class-card" id="class-card-{{ class.id }}">
+                    <div class="class-image">
+                        <i class="fas fa-dumbbell"></i>
+                        <span class="class-category">{{ class.get_difficulty_display|default:"Fitness" }}</span>
+                    </div>
+                    <div class="class-content">
+                        <div class="class-header">
+                            <div>
+                                <h3 class="class-name">{{ class.name }}</h3>
+                                <div class="class-trainer">
+                                    <i class="fas fa-user-tie"></i> {{ class.trainer.user.get_full_name|default:"Unassigned" }}
+                                </div>
+                            </div>
+                            <span class="class-badge {{ class.difficulty }}">{{ class.get_difficulty_display|default:"Beginner" }}</span>
+                        </div>
+                        <div class="class-details">
+                            <div class="class-detail-item">
+                                <i class="fas fa-calendar-alt"></i>
+                                {% if class.day_of_week == 0 %}Monday{% elif class.day_of_week == 1 %}Tuesday{% elif class.day_of_week == 2 %}Wednesday{% elif class.day_of_week == 3 %}Thursday{% elif class.day_of_week == 4 %}Friday{% elif class.day_of_week == 5 %}Saturday{% elif class.day_of_week == 6 %}Sunday{% endif %}
+                            </div>
+                            <div class="class-detail-item">
+                                <i class="fas fa-clock"></i> {{ class.time|time:"h:i A" }}
+                            </div>
+                            <div class="class-detail-item">
+                                <i class="fas fa-hourglass-half"></i> {{ class.duration }} minutes
+                            </div>
+                        </div>
+                        <div class="class-capacity">
+                            <div class="capacity-bar">
+                                {% with enrolled=class.enrolled_members.count %}
+                                <div class="capacity-fill" style="width: {% if class.max_capacity > 0 %}{% widthratio enrolled class.max_capacity 100 %}{% else %}0{% endif %}%;"></div>
+                                {% endwith %}
+                            </div>
+                            <div class="capacity-text">
+                                <span>{{ class.enrolled_members.count }} enrolled</span>
+                                <span>Max: {{ class.max_capacity }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="class-footer">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" class="class-checkbox" value="{{ class.id }}" onchange="updateBulkActions()" style="width: 18px; height: 18px;">
+                            <span class="badge {% if class.is_active %}badge-success{% else %}badge-warning{% endif %}">
+                                {% if class.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </div>
+                        <div class="action-buttons">
+                            <a href="{% url 'admin_class_detail' class.id %}" class="btn-outline btn-sm" title="View Details"><i class="fas fa-eye"></i></a>
+                            <!-- EDIT BUTTON - opens modal to edit class -->
+                            <button onclick="openEditModal({{ class.id }})" class="btn-outline btn-sm" title="Edit"><i class="fas fa-edit"></i></button>
+                            <!-- DELETE BUTTON - deletes class via AJAX -->
+                            <button onclick="confirmDelete({{ class.id }}, '{{ class.name|escapejs }}')" class="btn-danger btn-sm" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                            <!-- TOGGLE STATUS BUTTON - activates/deactivates class -->
+                            <button onclick="toggleStatus({{ class.id }}, '{{ class.name|escapejs }}')" class="btn-outline btn-sm" title="{% if class.is_active %}Deactivate{% else %}Activate{% endif %}">
+                                {% if class.is_active %}<i class="fas fa-pause-circle"></i>{% else %}<i class="fas fa-play-circle"></i>{% endif %}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if classes.has_other_pages %}
+            <div class="pagination">
+                {% if classes.has_previous %}
+                    <a href="?page=1{% if current_filters.difficulty %}&difficulty={{ current_filters.difficulty }}{% endif %}{% if current_filters.trainer %}&trainer={{ current_filters.trainer }}{% endif %}{% if current_filters.day %}&day={{ current_filters.day }}{% endif %}{% if current_filters.duration %}&duration={{ current_filters.duration }}{% endif %}{% if current_filters.search %}&search={{ current_filters.search }}{% endif %}" class="pagination-btn"><i class="fas fa-angle-double-left"></i></a>
+                    <a href="?page={{ classes.previous_page_number }}{% if current_filters.difficulty %}&difficulty={{ current_filters.difficulty }}{% endif %}{% if current_filters.trainer %}&trainer={{ current_filters.trainer }}{% endif %}{% if current_filters.day %}&day={{ current_filters.day }}{% endif %}{% if current_filters.duration %}&duration={{ current_filters.duration }}{% endif %}{% if current_filters.search %}&search={{ current_filters.search }}{% endif %}" class="pagination-btn"><i class="fas fa-angle-left"></i></a>
+                {% endif %}
+
+                {% for i in classes.paginator.page_range %}
+                    {% if classes.number == i %}
+                        <span class="pagination-btn active">{{ i }}</span>
+                    {% elif i > classes.number|add:'-3' and i < classes.number|add:'3' %}
+                        <a href="?page={{ i }}{% if current_filters.difficulty %}&difficulty={{ current_filters.difficulty }}{% endif %}{% if current_filters.trainer %}&trainer={{ current_filters.trainer }}{% endif %}{% if current_filters.day %}&day={{ current_filters.day }}{% endif %}{% if current_filters.duration %}&duration={{ current_filters.duration }}{% endif %}{% if current_filters.search %}&search={{ current_filters.search }}{% endif %}" class="pagination-btn">{{ i }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if classes.has_next %}
+                    <a href="?page={{ classes.next_page_number }}{% if current_filters.difficulty %}&difficulty={{ current_filters.difficulty }}{% endif %}{% if current_filters.trainer %}&trainer={{ current_filters.trainer }}{% endif %}{% if current_filters.day %}&day={{ current_filters.day }}{% endif %}{% if current_filters.duration %}&duration={{ current_filters.duration }}{% endif %}{% if current_filters.search %}&search={{ current_filters.search }}{% endif %}" class="pagination-btn"><i class="fas fa-angle-right"></i></a>
+                    <a href="?page={{ classes.paginator.num_pages }}{% if current_filters.difficulty %}&difficulty={{ current_filters.difficulty }}{% endif %}{% if current_filters.trainer %}&trainer={{ current_filters.trainer }}{% endif %}{% if current_filters.day %}&day={{ current_filters.day }}{% endif %}{% if current_filters.duration %}&duration={{ current_filters.duration }}{% endif %}{% if current_filters.search %}&search={{ current_filters.search }}{% endif %}" class="pagination-btn"><i class="fas fa-angle-double-right"></i></a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% else %}
+            <!-- WALANG CLASS - display empty state -->
+            <div class="empty-state">
+                <i class="fas fa-dumbbell"></i>
+                <h3>No Classes Found</h3>
+                <p>There are no classes matching your criteria.</p>
+                <a href="/admin/classes/gymclass/add/" class="btn-primary" target="_blank">
+                    <i class="fas fa-plus-circle"></i> Add New Class
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- EDIT CLASS MODAL - for editing existing classes -->
+<div id="editClassModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-edit" style="color: var(--secondary);"></i> Edit Class</h2>
+            <button class="modal-close" onclick="closeEditModal()">&times;</button>
+        </div>
+        <form id="editClassForm">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_class">
+            <input type="hidden" name="class_id" id="edit_class_id">
+            <div id="editClassFields"></div>
+            <div class="form-group" style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Update Class</button>
+                <button type="button" class="btn-secondary" onclick="closeEditModal()"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- DELETE CONFIRMATION MODAL -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Confirm Delete</h2>
+            <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+        </div>
+        <div style="text-align: center; padding: 1rem;">
+            <i class="fas fa-trash-alt" style="font-size: 3rem; color: var(--danger); margin-bottom: 1rem;"></i>
+            <p style="margin-bottom: 1rem; font-size: 1.1rem;">Are you sure you want to delete <strong id="deleteItemName"></strong>?</p>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">This action cannot be undone.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="confirmDeleteBtn" class="btn-danger"><i class="fas fa-trash-alt"></i> Delete</button>
+                <button type="button" class="btn-secondary" onclick="closeDeleteModal()"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BULK DELETE CONFIRMATION MODAL -->
+<div id="bulkDeleteModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Confirm Bulk Delete</h2>
+            <button class="modal-close" onclick="closeBulkDeleteModal()">&times;</button>
+        </div>
+        <div style="text-align: center; padding: 1rem;">
+            <i class="fas fa-trash-alt" style="font-size: 3rem; color: var(--danger); margin-bottom: 1rem;"></i>
+            <p style="margin-bottom: 1rem; font-size: 1.1rem;">Are you sure you want to delete <strong id="bulkDeleteCount"></strong> class(es)?</p>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">This action cannot be undone.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="confirmBulkDeleteBtn" class="btn-danger"><i class="fas fa-trash-alt"></i> Delete All</button>
+                <button type="button" class="btn-secondary" onclick="closeBulkDeleteModal()"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TOGGLE STATUS MODAL -->
+<div id="toggleStatusModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-sync-alt" style="color: var(--secondary);"></i> Toggle Status</h2>
+            <button class="modal-close" onclick="closeToggleModal()">&times;</button>
+        </div>
+        <div style="text-align: center; padding: 1rem;">
+            <i class="fas fa-exchange-alt" style="font-size: 3rem; color: var(--secondary); margin-bottom: 1rem;"></i>
+            <p style="margin-bottom: 1rem; font-size: 1.1rem;" id="toggleStatusMessage"></p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="confirmToggleBtn" class="btn-primary"><i class="fas fa-check"></i> Confirm</button>
+                <button type="button" class="btn-secondary" onclick="closeToggleModal()"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // CSRF Token
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    // Current IDs
+    let currentClassId = null;
+    let currentDeleteClassId = null;
+    let currentToggleClassId = null;
+    let selectedClassIds = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile sidebar toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+        if (mobileToggle && sidebar) {
+            mobileToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                const icon = this.querySelector('i');
+                icon.className = sidebar.classList.contains('active') ? 'fas fa-times' : 'fas fa-bars';
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+        }
+
+        // Search
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    const params = new URLSearchParams(window.location.search);
+                    params.set('search', this.value);
+                    window.location.search = params.toString();
+                }
+            });
+        }
+
+        // Form submissions
+        document.getElementById('editClassForm').addEventListener('submit', function(e) { e.preventDefault(); updateClass(); });
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() { deleteClass(currentDeleteClassId); });
+        document.getElementById('confirmBulkDeleteBtn').addEventListener('click', function() { bulkDeleteClasses(selectedClassIds); });
+        document.getElementById('confirmToggleBtn').addEventListener('click', function() { toggleClassStatus(currentToggleClassId); });
+        
+        updateBulkActions();
+    });
+
+    // OPEN EDIT MODAL - fetches class data and displays edit form
+    function openEditModal(classId) {
+        currentClassId = classId;
+        fetch(`{% url "admin_class_list" %}?action=get_class_data&class_id=${classId}`)
+            .then(response => response.json())
+            .then(data => {
+                const fields = `
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-tag"></i> Class Name</label>
+                        <input type="text" name="name" class="form-control" value="${data.name.replace(/'/g, "\\'")}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-align-left"></i> Description</label>
+                        <textarea name="description" class="form-control" rows="3">${data.description ? data.description.replace(/'/g, "\\'") : ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-user-tie"></i> Trainer</label>
+                        <select name="trainer" class="form-control" required>
+                            <option value="">Select Trainer</option>
+                            {% for trainer in trainers %}
+                            <option value="{{ trainer.id }}" ${data.trainer_id == {{ trainer.id }} ? 'selected' : ''}>{{ trainer.user.get_full_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-calendar-alt"></i> Day of Week</label>
+                        <select name="day_of_week" class="form-control" required>
+                            <option value="0" ${data.day_of_week == 0 ? 'selected' : ''}>Monday</option>
+                            <option value="1" ${data.day_of_week == 1 ? 'selected' : ''}>Tuesday</option>
+                            <option value="2" ${data.day_of_week == 2 ? 'selected' : ''}>Wednesday</option>
+                            <option value="3" ${data.day_of_week == 3 ? 'selected' : ''}>Thursday</option>
+                            <option value="4" ${data.day_of_week == 4 ? 'selected' : ''}>Friday</option>
+                            <option value="5" ${data.day_of_week == 5 ? 'selected' : ''}>Saturday</option>
+                            <option value="6" ${data.day_of_week == 6 ? 'selected' : ''}>Sunday</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-clock"></i> Time</label>
+                        <input type="time" name="time" class="form-control" value="${data.time}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-hourglass-half"></i> Duration (minutes)</label>
+                        <input type="number" name="duration" class="form-control" value="${data.duration}" min="15" max="180">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-signal"></i> Difficulty</label>
+                        <select name="difficulty" class="form-control">
+                            <option value="beginner" ${data.difficulty == 'beginner' ? 'selected' : ''}>Beginner</option>
+                            <option value="intermediate" ${data.difficulty == 'intermediate' ? 'selected' : ''}>Intermediate</option>
+                            <option value="advanced" ${data.difficulty == 'advanced' ? 'selected' : ''}>Advanced</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label"><i class="fas fa-users"></i> Max Capacity</label>
+                        <input type="number" name="max_capacity" class="form-control" value="${data.max_capacity}" min="1" max="100">
+                    </div>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="is_active" ${data.is_active ? 'checked' : ''}>
+                            <span>Active Class</span>
+                        </label>
+                    </div>
+                `;
+                document.getElementById('editClassFields').innerHTML = fields;
+                document.getElementById('edit_class_id').value = data.id;
+                document.getElementById('editClassModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            })
+            .catch(() => showAlert('danger', 'Failed to load class data.'));
+    }
+    function closeEditModal() { 
+        document.getElementById('editClassModal').classList.remove('active'); 
+        document.body.style.overflow = ''; 
+    }
+
+    // UPDATE CLASS - sends edited data to server
+    function updateClass() {
+        const formData = new FormData(document.getElementById('editClassForm'));
+        formData.append('class_id', currentClassId);
+        
+        fetch('{% url "admin_class_list" %}', {
+            method: 'POST', 
+            headers: { 'X-CSRFToken': csrftoken }, 
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) { 
+                closeEditModal(); 
+                showAlert('success', data.message); 
+                setTimeout(() => location.reload(), 1500); 
+            } else { 
+                showAlert('danger', data.error); 
+            }
+        })
+        .catch(() => showAlert('danger', 'An error occurred.'));
+    }
+
+    // DELETE - single class
+    function confirmDelete(classId, className) {
+        currentDeleteClassId = classId;
+        document.getElementById('deleteItemName').textContent = className;
+        document.getElementById('deleteModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeDeleteModal() { 
+        document.getElementById('deleteModal').classList.remove('active'); 
+        document.body.style.overflow = ''; 
+    }
+
+    function deleteClass(classId) {
+        const formData = new FormData();
+        formData.append('action', 'delete_class');
+        formData.append('class_id', classId);
+        formData.append('csrfmiddlewaretoken', csrftoken);
+        
+        fetch('{% url "admin_class_list" %}', {
+            method: 'POST', 
+            headers: { 'X-CSRFToken': csrftoken }, 
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) { 
+                closeDeleteModal(); 
+                showAlert('success', data.message); 
+                document.getElementById(`class-card-${classId}`).remove(); 
+            } else { 
+                showAlert('danger', data.error); 
+            }
+        })
+        .catch(() => showAlert('danger', 'An error occurred.'));
+    }
+
+    // BULK DELETE
+    function confirmBulkDelete() {
+        const checkboxes = document.querySelectorAll('.class-checkbox:checked');
+        selectedClassIds = Array.from(checkboxes).map(cb => cb.value);
+        if (selectedClassIds.length === 0) { 
+            showAlert('warning', 'No classes selected.'); 
+            return; 
+        }
+        document.getElementById('bulkDeleteCount').textContent = selectedClassIds.length;
+        document.getElementById('bulkDeleteModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeBulkDeleteModal() { 
+        document.getElementById('bulkDeleteModal').classList.remove('active'); 
+        document.body.style.overflow = ''; 
+    }
+
+    function bulkDeleteClasses(ids) {
+        const formData = new FormData();
+        formData.append('action', 'bulk_delete_classes');
+        ids.forEach(id => formData.append('class_ids[]', id));
+        formData.append('csrfmiddlewaretoken', csrftoken);
+        
+        fetch('{% url "admin_class_list" %}', {
+            method: 'POST', 
+            headers: { 'X-CSRFToken': csrftoken }, 
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) { 
+                closeBulkDeleteModal(); 
+                showAlert('success', data.message); 
+                setTimeout(() => location.reload(), 1500); 
+            } else { 
+                showAlert('danger', data.error); 
+            }
+        })
+        .catch(() => showAlert('danger', 'An error occurred.'));
+    }
+
+    // TOGGLE STATUS - activate/deactivate
+    function toggleStatus(classId, className) {
+        currentToggleClassId = classId;
+        const card = document.getElementById(`class-card-${classId}`);
+        const isActive = card.querySelector('.badge').classList.contains('badge-success');
+        document.getElementById('toggleStatusMessage').innerHTML = `Are you sure you want to <strong>${isActive ? 'deactivate' : 'activate'}</strong> "${className}"?`;
+        document.getElementById('toggleStatusModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeToggleModal() { 
+        document.getElementById('toggleStatusModal').classList.remove('active'); 
+        document.body.style.overflow = ''; 
+    }
+
+    function toggleClassStatus(classId) {
+        const formData = new FormData();
+        formData.append('action', 'toggle_class_status');
+        formData.append('class_id', classId);
+        formData.append('csrfmiddlewaretoken', csrftoken);
+        
+        fetch('{% url "admin_class_list" %}', {
+            method: 'POST', 
+            headers: { 'X-CSRFToken': csrftoken }, 
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                closeToggleModal(); 
+                showAlert('success', data.message);
+                const card = document.getElementById(`class-card-${classId}`);
+                const badge = card.querySelector('.badge');
+                const btn = card.querySelector('button[onclick*="toggleStatus"]');
+                if (data.is_active) {
+                    badge.className = 'badge badge-success'; 
+                    badge.textContent = 'Active';
+                    btn.innerHTML = '<i class="fas fa-pause-circle"></i>'; 
+                    btn.title = 'Deactivate';
+                } else {
+                    badge.className = 'badge badge-warning'; 
+                    badge.textContent = 'Inactive';
+                    btn.innerHTML = '<i class="fas fa-play-circle"></i>'; 
+                    btn.title = 'Activate';
+                }
+            } else { 
+                showAlert('danger', data.error); 
+            }
+        })
+        .catch(() => showAlert('danger', 'An error occurred.'));
+    }
+
+    // BULK ACTIONS UI
+    function updateBulkActions() {
+        const checkboxes = document.querySelectorAll('.class-checkbox:checked');
+        const count = checkboxes.length;
+        const bulk = document.getElementById('bulkActions');
+        const selected = document.getElementById('selectedCount');
+        const selectAll = document.getElementById('selectAllCheckbox');
+        
+        if (count > 0) { 
+            bulk.style.display = 'flex'; 
+            selected.textContent = count; 
+        } else { 
+            bulk.style.display = 'none'; 
+        }
+        
+        if (selectAll) {
+            selectAll.checked = count === document.querySelectorAll('.class-checkbox').length;
+        }
+    }
+
+    function toggleSelectAll() {
+        const selectAll = document.getElementById('selectAllCheckbox');
+        document.querySelectorAll('.class-checkbox').forEach(cb => cb.checked = selectAll.checked);
+        updateBulkActions();
+    }
+
+    function clearSelection() {
+        document.querySelectorAll('.class-checkbox').forEach(cb => cb.checked = false);
+        updateBulkActions();
+    }
+
+    // UTILITIES
+    function showAlert(type, message) {
+        document.querySelectorAll('.alert').forEach(a => a.remove());
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show`;
+        alert.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alert.innerHTML = `${message}<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>`;
+        document.body.appendChild(alert);
+        setTimeout(() => { 
+            alert.classList.remove('show'); 
+            setTimeout(() => alert.remove(), 300); 
+        }, 5000);
+    }
+</script>
+{% endblock %}

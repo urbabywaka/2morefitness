@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ trainer.user.get_full_name }} - 2moreFitness{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container" style="max-width: 900px;">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">{{ trainer.user.first_name.0 }}{{ trainer.user.last_name.0 }}</div>
+                <h2 class="profile-name">{{ trainer.user.get_full_name }}</h2>
+                <p class="profile-role">{{ trainer.specialization }}</p>
+            </div>
+            
+            <div class="profile-body">
+                <h4>About</h4>
+                <p>{{ trainer.bio }}</p>
+                
+                <h4 style="margin-top: 2rem;">Experience</h4>
+                <p>{{ trainer.years_of_experience }} years of professional training experience</p>
+                
+                <h4 style="margin-top: 2rem;">Certifications</h4>
+                <ul>
+                    {% for cert in trainer.get_certifications_list %}
+                    <li>{{ cert }}</li>
+                    {% endfor %}
+                </ul>
+                
+                {% if trainer.hourly_rate %}
+                <h4 style="margin-top: 2rem;">Personal Training</h4>
+                <p><strong>Rate:</strong> ₱{{ trainer.hourly_rate }} per hour</p>
+                {% endif %}
+            </div>
+        </div>
+        
+        {% if classes %}
+        <div class="dashboard-section" style="margin-top: 2rem;">
+            <h3>Classes by {{ trainer.user.first_name }}</h3>
+            <div class="grid grid-2" style="margin-top: 1rem;">
+                {% for class in classes %}
+                <div class="card">
+                    <div class="card-content">
+                        <h4>{{ class.name }}</h4>
+                        <p>{{ class.get_day_of_week_display }} at {{ class.time|time:"g:i A" }}</p>
+                        <span class="badge badge-{{ class.difficulty }}">{{ class.get_difficulty_display }}</span>
+                        <a href="{% url 'class_detail' class.id %}" class="btn btn-outline" style="width: 100%; margin-top: 1rem;">View Class</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        <div style="margin-top: 2rem; text-align: center;">
+            <a href="{% url 'trainer_list' %}">← Back to Trainers</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

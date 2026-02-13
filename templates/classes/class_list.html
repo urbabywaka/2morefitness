@@ -1,0 +1,707 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Classes - 2moreFitness{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500&family=Montserrat:wght@800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+    <ul>
+        <li><a href="{% url 'index' %}" class="mobile-nav-link"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="{% url 'index' %}#features" class="mobile-nav-link"><i class="fas fa-star"></i> Features</a></li>
+        <li><a href="{% url 'membership_plans' %}" class="mobile-nav-link"><i class="fas fa-crown"></i> Membership</a></li>
+        <li><a href="{% url 'class_list' %}" class="mobile-nav-link active"><i class="fas fa-dumbbell"></i> Classes</a></li>
+        <li><a href="{% url 'index' %}#franchise" class="mobile-nav-link"><i class="fas fa-store"></i> Franchise</a></li>
+        <li><a href="{% url 'index' %}#corporate" class="mobile-nav-link"><i class="fas fa-briefcase"></i> Corporate</a></li>
+        <li><a href="{% url 'index' %}#contact" class="mobile-nav-link"><i class="fas fa-phone"></i> Contact</a></li>
+        <li>
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}" class="mobile-nav-link mobile-cta"><i class="fas fa-user-circle"></i> My Account</a>
+            {% else %}
+                <a href="{% url 'register' %}" class="mobile-nav-link mobile-cta"><i class="fas fa-dumbbell"></i> Join Now</a>
+            {% endif %}
+        </li>
+    </ul>
+</div>
+
+<section class="section">
+    <div class="container">
+        <div class="section-title">
+            <h2>Our Classes</h2>
+            <p>Join our energizing group fitness classes led by expert instructors</p>
+        </div>
+        
+        <!-- Filters -->
+        <div class="filters-container">
+            <div class="filters">
+                <a href="{% url 'class_list' %}" class="btn {% if not day_filter and not difficulty_filter %}btn-primary{% else %}btn-outline{% endif %}">All Classes</a>
+                <a href="?difficulty=beginner" class="btn {% if difficulty_filter == 'beginner' %}btn-primary{% else %}btn-outline{% endif %}">Beginner</a>
+                <a href="?difficulty=intermediate" class="btn {% if difficulty_filter == 'intermediate' %}btn-primary{% else %}btn-outline{% endif %}">Intermediate</a>
+                <a href="?difficulty=advanced" class="btn {% if difficulty_filter == 'advanced' %}btn-primary{% else %}btn-outline{% endif %}">Advanced</a>
+            </div>
+        </div>
+        
+        <div class="grid grid-3">
+            {% for class in classes %}
+            <div class="class-card">
+                <div class="class-card-content">
+                    <div class="class-header">
+                        <h4>{{ class.name }}</h4>
+                        <span class="badge badge-{{ class.difficulty }}">{{ class.get_difficulty_display }}</span>
+                    </div>
+                    
+                    <p class="class-description">{{ class.description|truncatewords:30 }}</p>
+                    
+                    <div class="class-details">
+                        <div class="detail-item">
+                            <i class="fas fa-user-tie"></i>
+                            <span>{{ class.trainer.user.get_full_name }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-calendar"></i>
+                            <span>{{ class.get_day_of_week_display }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-clock"></i>
+                            <span>{{ class.time|time:"g:i A" }}</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-hourglass-half"></i>
+                            <span>{{ class.duration }} minutes</span>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-users"></i>
+                            <span>{{ class.enrolled_count }}/{{ class.max_capacity }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="class-status">
+                        {% if class.is_full %}
+                            <span class="status-badge full">Class Full</span>
+                        {% else %}
+                            <span class="status-badge available">{{ class.spots_available }} spots left</span>
+                        {% endif %}
+                    </div>
+                    
+                    <a href="{% url 'class_detail' class.id %}" class="btn btn-primary btn-full-width">View Details</a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fas fa-dumbbell" style="font-size: 3rem; color: var(--light-gray); margin-bottom: 1rem;"></i>
+                <p>No classes available at the moment</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<h2>‎ </h2>
+<h2>‎ </h2>
+<h2>‎ </h2>
+<h2>‎ </h2>
+<h2>‎ </h2>
+<h2>‎ </h2>
+
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-main">
+            <div class="footer-brand">
+                <h3 class="footer-logo">2more<span>Fitness</span></h3>
+                <p class="footer-tagline">Affordable. Accessible. Authentic.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-links-grid">
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="{% url 'index' %}">Home</a></li>
+                        <li><a href="{% url 'index' %}#features">Features</a></li>
+                        <li><a href="{% url 'membership_plans' %}">Membership</a></li>
+                        <li><a href="{% url 'class_list' %}">Classes</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Business</h4>
+                    <ul>
+                        <li><a href="#">Upgrade Your Gym</a></li>
+                        <li><a href="#">Tech</a></li>
+                        <li><a href="{% url 'index' %}#corporate">Corporate</a></li>
+                        <li><a href="{% url 'index' %}#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="tel:0212345678">(02) 1234-5678</a></li>
+                        <li><a href="mailto:info@2morefitness.com">info@2morefitness.com</a></li>
+                        <li><span>Open Daily: 5AM - 11PM</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 2moreFitness. All rights reserved.</p>
+            <div class="footer-legal">
+                <a href="#">Privacy Policy</a>
+                <span class="divider">•</span>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== Imported from membership plans design ===== */
+    
+    /* ===== Color Scheme & Variables ===== */
+    :root {
+        --primary: #000000;
+        --secondary: #FF6B00;
+        --secondary-dark: #E55A00;
+        --accent: #00A8FF;
+        --light: #F8F9FA;
+        --dark: #1A1A1A;
+        --gray: #666666;
+        --light-gray: #E0E0E0;
+        --white: #FFFFFF;
+        
+        --font-heading: 'Montserrat', sans-serif;
+        --font-body: 'Poppins', sans-serif;
+        --font-details: 'Inter', sans-serif;
+        
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.15);
+        --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.2);
+        --radius: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --transition: all 0.3s ease;
+    }
+    
+    /* ===== Base Styles ===== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: var(--font-body);
+        line-height: 1.6;
+        color: var(--primary);
+        background: var(--white);
+        overflow-x: hidden;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    .section {
+        padding: 80px 0;
+    }
+    
+    /* ===== Mobile Menu ===== */
+    .mobile-menu {
+        display: none;
+        background: var(--white);
+        padding: 20px;
+        border-top: 1px solid var(--light-gray);
+    }
+    
+    .mobile-menu.active {
+        display: block;
+    }
+    
+    .mobile-nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--primary);
+        text-decoration: none;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .mobile-nav-link.active {
+        color: var(--secondary);
+        font-weight: 600;
+    }
+    
+    .mobile-cta {
+        background: var(--secondary);
+        color: var(--white) !important;
+        text-align: center;
+        border-radius: var(--radius);
+        margin-top: 15px;
+    }
+    
+    /* ===== Section Title ===== */
+    .section-title {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+    
+    .section-title h2 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        color: var(--primary);
+        position: relative;
+        display: inline-block;
+    }
+    
+    .section-title h2:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--secondary);
+    }
+    
+    .section-title p {
+        max-width: 600px;
+        margin: 0 auto;
+        color: var(--gray);
+        font-size: 1.1rem;
+    }
+    
+    /* ===== Filters ===== */
+    .filters-container {
+        margin-bottom: 40px;
+        text-align: center;
+    }
+    
+    .filters {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    /* ===== Grid ===== */
+    .grid {
+        display: grid;
+        gap: 30px;
+    }
+    
+    .grid-3 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    /* ===== Class Cards ===== */
+    .class-card {
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--light-gray);
+        transition: var(--transition);
+    }
+    
+    .class-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .class-card-content {
+        padding: 30px;
+    }
+    
+    .class-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
+    
+    .class-header h4 {
+        font-size: 1.5rem;
+        color: var(--primary);
+        margin: 0;
+        flex: 1;
+    }
+    
+    .class-description {
+        color: var(--gray);
+        margin-bottom: 25px;
+        line-height: 1.6;
+    }
+    
+    /* ===== Class Details ===== */
+    .class-details {
+        margin: 25px 0;
+    }
+    
+    .detail-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+    
+    .detail-item i {
+        color: var(--secondary);
+        width: 20px;
+        text-align: center;
+    }
+    
+    .detail-item span {
+        color: var(--primary);
+        font-weight: 500;
+    }
+    
+    /* ===== Badges ===== */
+    .badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .badge-beginner {
+        background: rgba(76, 175, 80, 0.1);
+        color: #4CAF50;
+        border: 1px solid #4CAF50;
+    }
+    
+    .badge-intermediate {
+        background: rgba(255, 152, 0, 0.1);
+        color: #FF9800;
+        border: 1px solid #FF9800;
+    }
+    
+    .badge-advanced {
+        background: rgba(244, 67, 54, 0.1);
+        color: #F44336;
+        border: 1px solid #F44336;
+    }
+    
+    .status-badge {
+        display: inline-block;
+        padding: 8px 16px;
+        border-radius: var(--radius);
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .status-badge.available {
+        background: rgba(76, 175, 80, 0.1);
+        color: #4CAF50;
+    }
+    
+    .status-badge.full {
+        background: rgba(244, 67, 54, 0.1);
+        color: #F44336;
+    }
+    
+    /* ===== Buttons ===== */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 24px;
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        border: 2px solid transparent;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: var(--transition);
+        white-space: nowrap;
+    }
+    
+    .btn-primary {
+        background: var(--secondary);
+        color: var(--white);
+    }
+    
+    .btn-primary:hover {
+        background: var(--secondary-dark);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .btn-outline {
+        background: transparent;
+        color: var(--primary);
+    
+    }
+    
+    .btn-outline:hover {
+        border-color: var(--secondary);
+        color: var(--secondary);
+    }
+    
+    .btn-full-width {
+        width: 100%;
+        margin-top: 20px;
+    }
+    
+    /* ===== Empty State ===== */
+    .empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 60px 20px;
+        background: var(--light);
+        border-radius: var(--radius-lg);
+    }
+    
+    .empty-state p {
+        color: var(--gray);
+        font-size: 1.1rem;
+    }
+    
+    /* ===== Footer ===== */
+    .footer {
+        background: var(--dark);
+        color: var(--white);
+        padding: 60px 0 30px;
+    }
+    
+    .footer-main {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 60px;
+        margin-bottom: 50px;
+    }
+    
+    .footer-logo {
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: var(--white);
+        margin-bottom: 10px;
+    }
+    
+    .footer-logo span {
+        color: var(--secondary);
+    }
+    
+    .footer-tagline {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 20px;
+        line-height: 1.4;
+    }
+    
+    .social-links {
+        display: flex;
+        gap: 12px;
+    }
+    
+    .social-links a {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+    }
+    
+    .social-links a:hover {
+        background: var(--secondary);
+        transform: translateY(-2px);
+    }
+    
+    .footer-links-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+    }
+    
+    .footer-column h4 {
+        font-size: 0.9rem;
+        color: var(--white);
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+    
+    .footer-column ul {
+        list-style: none;
+    }
+    
+    .footer-column ul li {
+        margin-bottom: 10px;
+    }
+    
+    .footer-column a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: var(--transition);
+    }
+    
+    .footer-column a:hover {
+        color: var(--secondary);
+        padding-left: 5px;
+    }
+    
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .footer-bottom p {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.85rem;
+    }
+    
+    .footer-legal {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .footer-legal a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+    
+    .footer-legal a:hover {
+        color: var(--secondary);
+    }
+    
+    .divider {
+        color: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* ===== Responsive Design ===== */
+    @media (max-width: 1024px) {
+        .grid-3 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        
+        .footer-main {
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .section {
+            padding: 60px 0;
+        }
+        
+        .grid-3 {
+            grid-template-columns: 1fr;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+        }
+        
+        .filters {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn {
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .footer-links-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .footer-bottom {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .footer-links-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .class-header {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .section-title h2 {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('active');
+                this.innerHTML = mobileMenu.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+            });
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (mobileMenuBtn && mobileMenu && !mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+            
+            // Close mobile menu when clicking on a link
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active');
+                    if (mobileMenuBtn) {
+                        mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                    }
+                });
+            });
+        }
+    });
+</script>
+{% endblock %}

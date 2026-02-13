@@ -1,0 +1,786 @@
+
+{% load static %}
+{% load admin_extras %}
+
+
+{% block extra_css %}
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<style>
+    :root {
+        --sidebar-width: 280px;
+        --header-height: 70px;
+        --sidebar-bg: #0f172a;
+        --sidebar-hover: #1e293b;
+        --sidebar-active: #FF6B00;
+        --card-bg: #ffffff;
+        --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        --border-color: #eef2f7;
+        --text-primary: #2d3748;
+        --text-secondary: #718096;
+        --text-muted: #a0aec0;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --secondary: #FF6B00;
+        --secondary-dark: #e55a00;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f7fafc; color: var(--text-primary); overflow-x: hidden; }
+    .dashboard-layout { display: flex; min-height: 100vh; }
+    .dashboard-sidebar { width: var(--sidebar-width); background: var(--sidebar-bg); color: white; display: flex; flex-direction: column; position: fixed; height: 100vh; overflow-y: auto; transition: transform 0.3s ease; z-index: 1000; box-shadow: 2px 0 10px rgba(0,0,0,0.1); }
+    .sidebar-header { padding: 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; }
+    .sidebar-logo { display: flex; align-items: center; justify-content: center; gap: 0.5rem; }
+    .sidebar-logo span { font-weight: 700; font-size: 1.5rem; color: white; }
+    .sidebar-logo span span { color: var(--secondary); }
+    .sidebar-nav { flex: 1; padding: 1.5rem 0; }
+    .nav-section { margin-bottom: 1.5rem; }
+    .nav-section-title { padding: 0.5rem 1.5rem; color: rgba(255,255,255,0.5); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+    .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem 1.5rem; color: rgba(255,255,255,0.8); text-decoration: none; transition: all 0.2s ease; border-left: 3px solid transparent; }
+    .nav-item:hover { background: var(--sidebar-hover); color: white; border-left-color: var(--secondary); }
+    .nav-item.active { background: rgba(255,107,0,0.1); color: var(--secondary); border-left-color: var(--secondary); }
+    .nav-item i { width: 20px; text-align: center; font-size: 1.1rem; }
+    .nav-badge { margin-left: auto; background: var(--secondary); color: white; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 10px; min-width: 20px; text-align: center; }
+    .sidebar-footer { padding: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); margin-top: auto; }
+    .user-profile { display: flex; align-items: center; gap: 0.75rem; }
+    .user-avatar { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--secondary), var(--secondary-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; }
+    .user-info h4 { font-size: 0.9rem; color: white; margin-bottom: 0.125rem; }
+    .user-info p { font-size: 0.75rem; color: rgba(255,255,255,0.7); }
+    .dashboard-main { flex: 1; margin-left: var(--sidebar-width); min-height: 100vh; transition: margin-left 0.3s ease; }
+    .dashboard-topbar { height: var(--header-height); background: white; border-bottom: 1px solid var(--border-color); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .topbar-left { display: flex; align-items: center; gap: 1rem; }
+    .mobile-toggle { display: none; background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; padding: 0.5rem; transition: color 0.2s ease; }
+    .mobile-toggle:hover { color: var(--text-primary); }
+    .topbar-logo { display: none; }
+    .page-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); }
+    .topbar-search { flex: 1; max-width: 400px; position: relative; }
+    .search-input { width: 100%; padding: 0.75rem 1rem 0.75rem 2.5rem; border: 1px solid var(--border-color); border-radius: 0.5rem; font-size: 0.9rem; background: #f8fafc; transition: all 0.2s ease; }
+    .search-input:focus { outline: none; border-color: var(--secondary); background: white; box-shadow: 0 0 0 3px rgba(255,107,0,0.1); }
+    .search-icon { position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--text-muted); }
+    .topbar-actions { display: flex; align-items: center; gap: 1rem; }
+    .notifications { position: relative; }
+    .notification-btn { background: none; border: none; color: var(--text-secondary); font-size: 1.25rem; cursor: pointer; padding: 0.5rem; position: relative; transition: color 0.2s ease; }
+    .notification-btn:hover { color: var(--text-primary); }
+    .notification-badge { position: absolute; top: 0; right: 0; background: var(--danger); color: white; font-size: 0.7rem; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+    .dashboard-content { padding: 2rem; }
+    .content-header { margin-bottom: 2rem; background: white; padding: 1.5rem; border-radius: 0.75rem; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between; }
+    .content-header h1 { font-size: 1.75rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.5rem; }
+    .content-header p { color: var(--text-secondary); font-size: 0.95rem; }
+    .date-badge { background: rgba(255,107,0,0.1); color: var(--secondary); padding: 0.5rem 1.25rem; border-radius: 2rem; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; }
+    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+    .stat-card { background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); transition: all 0.2s ease; display: flex; flex-direction: column; }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.1); }
+    .stat-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .stat-card-title { color: var(--text-secondary); font-size: 0.875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-icon-wrapper { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; color: white; }
+    .stat-icon-wrapper.primary { background: linear-gradient(135deg, var(--secondary), var(--secondary-dark)); }
+    .stat-icon-wrapper.success { background: linear-gradient(135deg, var(--success), #34d399); }
+    .stat-icon-wrapper.info { background: linear-gradient(135deg, var(--info), #60a5fa); }
+    .stat-icon-wrapper.warning { background: linear-gradient(135deg, var(--warning), #fbbf24); }
+    .stat-value { font-size: 2rem; font-weight: 700; color: var(--text-primary); line-height: 1; margin-bottom: 0.25rem; }
+    .stat-subtitle { color: var(--text-muted); font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; }
+    .filters-card { background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); margin-bottom: 2rem; }
+    .filters-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; }
+    .filter-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .filter-label { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem; }
+    .filter-label i { color: var(--secondary); }
+    .filter-select, .filter-input { padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; font-size: 0.95rem; background: white; transition: all 0.2s ease; }
+    .filter-select:focus, .filter-input:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(255,107,0,0.1); }
+    .filter-actions { display: flex; gap: 1rem; justify-content: flex-end; }
+    .btn-primary { background: var(--secondary); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s ease; cursor: pointer; font-size: 0.95rem; }
+    .btn-primary:hover { background: var(--secondary-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(255,107,0,0.2); }
+    .btn-secondary { background: #f8fafc; color: var(--text-primary); border: 1px solid var(--border-color); padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 500; text-decoration: none; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s ease; cursor: pointer; font-size: 0.95rem; }
+    .btn-secondary:hover { background: #eef2f7; transform: translateY(-1px); }
+    .btn-outline { padding: 0.5rem 1.25rem; border: 1px solid var(--border-color); border-radius: 0.5rem; color: var(--text-secondary); text-decoration: none; font-size: 0.875rem; font-weight: 500; transition: all 0.2s ease; background: white; display: inline-flex; align-items: center; gap: 0.5rem; }
+    .btn-outline:hover { background: var(--secondary); color: white; border-color: var(--secondary); }
+    .btn-danger { background: var(--danger); color: white; border: none; padding: 0.375rem 0.75rem; border-radius: 0.5rem; font-weight: 500; cursor: pointer; transition: all 0.2s ease; font-size: 0.75rem; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+    .btn-danger:hover { background: #dc2626; transform: translateY(-1px); }
+    .btn-sm { padding: 0.375rem 0.75rem; font-size: 0.75rem; }
+    .badge { padding: 0.25rem 0.75rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 600; display: inline-block; }
+    .badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+    .badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+    .badge-info { background: rgba(59, 130, 246, 0.1); color: var(--info); }
+    .card { background: white; border-radius: 0.75rem; box-shadow: var(--card-shadow); border: 1px solid var(--border-color); margin-bottom: 1.5rem; overflow: hidden; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; padding: 1.5rem; border-bottom: 1px solid var(--border-color); background: white; }
+    .card-title { font-size: 1.25rem; font-weight: 600; color: var(--text-primary); display: flex; align-items: center; gap: 0.75rem; margin: 0; }
+    .card-title i { color: var(--secondary); }
+    .table-responsive { overflow-x: auto; }
+    .members-table { width: 100%; border-collapse: collapse; }
+    .members-table th { text-align: left; padding: 1rem; background: #f8fafc; color: var(--text-secondary); font-weight: 600; font-size: 0.875rem; border-bottom: 2px solid var(--border-color); }
+    .members-table td { padding: 1rem; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+    .members-table tr:hover td { background: #f8fafc; }
+    .member-avatar-small { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--secondary), var(--secondary-dark)); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.875rem; text-transform: uppercase; }
+    .member-info-cell { display: flex; align-items: center; gap: 0.75rem; }
+    .member-name { font-weight: 600; color: var(--text-primary); }
+    .member-email { font-size: 0.75rem; color: var(--text-secondary); }
+    .action-buttons { display: flex; gap: 0.5rem; }
+    .bulk-actions { display: flex; gap: 0.5rem; margin-bottom: 1rem; padding: 1rem; background: #f8fafc; border-radius: 0.5rem; align-items: center; }
+    .select-all { display: flex; align-items: center; gap: 0.5rem; margin-right: 1rem; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center; }
+    .modal.active { display: flex; }
+    .modal-content { background: white; border-radius: 0.75rem; padding: 2rem; max-width: 500px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
+    .modal-header h2 { font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin: 0; }
+    .modal-close { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-secondary); }
+    .modal-close:hover { color: var(--danger); }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-label { display: block; font-size: 0.875rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.5rem; }
+    .form-label i { color: var(--secondary); margin-right: 0.5rem; }
+    .form-control { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; font-size: 0.95rem; background: white; transition: all 0.2s ease; }
+    .form-control:focus { outline: none; border-color: var(--secondary); box-shadow: 0 0 0 3px rgba(255,107,0,0.1); }
+    .form-control:read-only { background-color: #f8fafc; }
+    .checkbox-label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+    .checkbox-label input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--secondary); }
+    .pagination { display: flex; justify-content: center; align-items: center; gap: 0.5rem; padding: 1.5rem; }
+    .pagination-btn { padding: 0.5rem 1rem; border: 1px solid var(--border-color); background: white; color: var(--text-secondary); border-radius: 0.5rem; text-decoration: none; transition: all 0.2s ease; }
+    .pagination-btn:hover { background: var(--secondary); color: white; border-color: var(--secondary); }
+    .pagination-btn.active { background: var(--secondary); color: white; border-color: var(--secondary); }
+    .empty-state { text-align: center; padding: 4rem 2rem; }
+    .empty-state i { font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem; opacity: 0.5; }
+    .empty-state h3 { font-size: 1.25rem; color: var(--text-primary); margin-bottom: 0.5rem; }
+    .empty-state p { color: var(--text-secondary); margin-bottom: 1.5rem; }
+    @media (max-width: 1024px) { .dashboard-sidebar { transform: translateX(-100%); } .dashboard-sidebar.active { transform: translateX(0); } .dashboard-main { margin-left: 0; } .mobile-toggle { display: block; } .topbar-logo { display: block; } }
+    @media (max-width: 768px) { .dashboard-content { padding: 1rem; } .filters-grid { grid-template-columns: 1fr; } .filter-actions { flex-direction: column; } .topbar-search { display: none; } .action-buttons { flex-direction: column; } .bulk-actions { flex-direction: column; align-items: flex-start; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    <!-- Sidebar -->
+    <div class="dashboard-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <span>2more<span>Fitness</span></span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Main</div>
+                <a href="{% url 'admin_dashboard' %}" class="nav-item">
+                    <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
+                </a>
+                <a href="{% url 'admin_member_list' %}" class="nav-item active">
+                    <i class="fas fa-users"></i> <span>Members</span>
+                    <span class="nav-badge">{{ total_members|default:"0" }}</span>
+                </a>
+                <a href="{% url 'admin_class_list' %}" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i> <span>Classes</span>
+                </a>
+                <a href="{% url 'admin_attendance_report' %}" class="nav-item">
+                    <i class="fas fa-clipboard-list"></i> <span>Attendance</span>
+                </a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Account</div>
+                <a href="{% url 'logout' %}" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">{{ user.get_full_name|default:user.username|first|upper }}</div>
+                <div class="user-info">
+                    <h4>{{ user.get_full_name|default:user.username }}</h4>
+                    <p>Administrator</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <div class="dashboard-topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle"><i class="fas fa-bars"></i></button>
+                <div class="topbar-logo">
+                    <span style="font-weight: 700; font-size: 1.2rem; color: var(--text-primary);">
+                        2more<span style="color: #FF6B00;">Fitness</span>
+                    </span>
+                </div>
+          
+            </div>
+            
+            <div class="topbar-search">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search members..." value="{{ current_filters.search|default:'' }}">
+            </div>
+
+            <div class="topbar-actions">
+                <div class="notifications">
+                    <button class="notification-btn"><i class="fas fa-bell"></i><span class="notification-badge">3</span></button>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">{{ user.get_full_name|default:user.username|first|upper }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-content">
+            <!-- Header -->
+            <div class="content-header">
+                <div>
+                    <h1>Members Management</h1>
+                    <p>Manage all gym members - Create, Read, Update, Delete</p>
+                </div>
+                <div class="date-badge"><i class="far fa-calendar-alt"></i> {% now "l, F d, Y" %}</div>
+            </div>
+
+            <!-- Info Card - Django Admin Redirect for ADD ONLY -->
+            <div class="card" style="background: #f0f9ff; border: 1px solid #bae6fd; margin-bottom: 1.5rem;">
+                <div style="display: flex; align-items: center; gap: 1rem; padding: 0.5rem;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(59, 130, 246, 0.1); display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-shield-alt" style="color: #3b82f6; font-size: 1.5rem;"></i>
+                    </div>
+                    
+                    <a href="/admin/auth/user/add/" class="btn-primary" target="_blank" style="white-space: nowrap;">
+                        <i class="fas fa-external-link-alt"></i> Go to Django Admin
+                    </a>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">Total Members</span>
+                        <div class="stat-icon-wrapper primary"><i class="fas fa-users"></i></div>
+                    </div>
+                    <div class="stat-value">{{ total_members|default:"0" }}</div>
+                    <div class="stat-subtitle"><i class="fas fa-user-plus"></i> Registered members</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">Active</span>
+                        <div class="stat-icon-wrapper success"><i class="fas fa-check-circle"></i></div>
+                    </div>
+                    <div class="stat-value">{{ active_members|default:"0" }}</div>
+                    <div class="stat-subtitle"><i class="fas fa-percentage"></i> {{ active_members|default:"0" }} active</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">Inactive</span>
+                        <div class="stat-icon-wrapper warning"><i class="fas fa-pause-circle"></i></div>
+                    </div>
+                    <div class="stat-value">{{ inactive_members|default:"0" }}</div>
+                    <div class="stat-subtitle"><i class="fas fa-clock"></i> Inactive members</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <span class="stat-card-title">Quick Actions</span>
+                        <div class="stat-icon-wrapper info"><i class="fas fa-bolt"></i></div>
+                    </div>
+                    <div class="stat-value">
+                        <!-- CHANGED: Add Member button now redirects to Django Admin -->
+                        <a href="/admin/auth/user/add/" class="btn-primary btn-sm" target="_blank">
+                            <i class="fas fa-plus-circle"></i> Add Member
+                        </a>
+                    </div>
+                    <div class="stat-subtitle"><i class="fas fa-shield-alt"></i> Superuser only</div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-card">
+                <form method="get" id="filterForm">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label class="filter-label"><i class="fas fa-filter"></i> Status</label>
+                            <select name="status" class="filter-select" onchange="this.form.submit()">
+                                <option value="">All Members</option>
+                                <option value="active" {% if current_filters.status == 'active' %}selected{% endif %}>Active</option>
+                                <option value="inactive" {% if current_filters.status == 'inactive' %}selected{% endif %}>Inactive</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label"><i class="fas fa-calendar"></i> Join Date</label>
+                            <select name="join_date" class="filter-select" onchange="this.form.submit()">
+                                <option value="">All Time</option>
+                                <option value="today" {% if current_filters.join_date == 'today' %}selected{% endif %}>Today</option>
+                                <option value="week" {% if current_filters.join_date == 'week' %}selected{% endif %}>This Week</option>
+                                <option value="month" {% if current_filters.join_date == 'month' %}selected{% endif %}>This Month</option>
+                                <option value="year" {% if current_filters.join_date == 'year' %}selected{% endif %}>This Year</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label"><i class="fas fa-sort"></i> Sort By</label>
+                            <select name="sort" class="filter-select" onchange="this.form.submit()">
+                                <option value="newest" {% if current_filters.sort == 'newest' or not current_filters.sort %}selected{% endif %}>Newest First</option>
+                                <option value="oldest" {% if current_filters.sort == 'oldest' %}selected{% endif %}>Oldest First</option>
+                                <option value="name_asc" {% if current_filters.sort == 'name_asc' %}selected{% endif %}>Name A-Z</option>
+                                <option value="name_desc" {% if current_filters.sort == 'name_desc' %}selected{% endif %}>Name Z-A</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label"><i class="fas fa-redo"></i> Reset</label>
+                            <a href="{% url 'admin_member_list' %}" class="btn-secondary" style="text-align: center;">Reset Filters</a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Bulk Actions -->
+            <div class="bulk-actions" id="bulkActions" style="display: none;">
+                <div class="select-all">
+                    <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()">
+                    <label for="selectAllCheckbox">Select All</label>
+                </div>
+                <span id="selectedCount">0</span> members selected
+                <button class="btn-danger btn-sm" onclick="confirmBulkDelete()"><i class="fas fa-trash-alt"></i> Delete Selected</button>
+                <button class="btn-secondary btn-sm" onclick="clearSelection()"><i class="fas fa-times"></i> Clear</button>
+            </div>
+
+            <!-- Members Table -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="fas fa-users"></i> All Members</h3>
+                    <span class="badge badge-info">{{ total_members }} total members</span>
+                </div>
+                
+                {% if members %}
+                <div class="table-responsive">
+                    <table class="members-table">
+                        <thead>
+                            <tr>
+                                <th width="40"><input type="checkbox" id="selectAllHeader" onchange="toggleSelectAllFromHeader()"></th>
+                                <th>Member</th>
+                                <th>Contact</th>
+                                <th>Join Date</th>
+                                <th>Status</th>
+                                <th width="140">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for member in members %}
+                            <tr id="member-row-{{ member.id }}">
+                                <td><input type="checkbox" class="member-checkbox" value="{{ member.id }}" onchange="updateBulkActions()"></td>
+                                <td>
+                                    <div class="member-info-cell">
+                                        <div class="member-avatar-small">
+                                            {{ member.user.first_name|first|default:member.user.username|first|upper }}{{ member.user.last_name|first|upper }}
+                                        </div>
+                                        <div>
+                                            <div class="member-name">{{ member.user.get_full_name|default:member.user.username }}</div>
+                                            <div class="member-email">{{ member.user.email|default:"No email" }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {% with profile=profile_dict|get_item:member.user.id %}
+                                        {{ profile.phone|default:"No phone" }}
+                                    {% endwith %}
+                                </td>
+                                <td>{{ member.created_at|date:"M d, Y" }}</td>
+                                <td>
+                                    <span class="badge {% if member.is_active %}badge-success{% else %}badge-warning{% endif %}">
+                                        {% if member.is_active %}Active{% else %}Inactive{% endif %}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="{% url 'admin_member_detail' member.id %}" class="btn-outline btn-sm" title="View Details"><i class="fas fa-eye"></i></a>
+                                        <!-- UNCHANGED: Edit button still opens the edit modal -->
+                                        <button onclick="openEditModal({{ member.id }})" class="btn-outline btn-sm" title="Edit"><i class="fas fa-edit"></i></button>
+                                        <!-- UNCHANGED: Delete button still works via AJAX -->
+                                        <button onclick="confirmDelete({{ member.id }}, '{{ member.user.get_full_name|default:member.user.username|escapejs }}')" class="btn-danger btn-sm" title="Delete"><i class="fas fa-trash-alt"></i></button>
+                                        <!-- UNCHANGED: Toggle Status button still works via AJAX -->
+                                        <button onclick="toggleStatus({{ member.id }}, '{{ member.user.get_full_name|default:member.user.username|escapejs }}')" class="btn-outline btn-sm" title="{% if member.is_active %}Deactivate{% else %}Activate{% endif %}">
+                                            {% if member.is_active %}<i class="fas fa-pause-circle"></i>{% else %}<i class="fas fa-play-circle"></i>{% endif %}
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if members.has_other_pages %}
+                <div class="pagination">
+                    {% if members.has_previous %}
+                        <a href="?page=1{% if current_filters.status %}&status={{ current_filters.status }}{% endif %}{% if current_filters.join_date %}&join_date={{ current_filters.join_date }}{% endif %}{% if current_filters.sort %}&sort={{ current_filters.sort }}{% endif %}{% if current_filters.search %}&search={{ current_filters.search }}{% endif %}" class="pagination-btn"><i class="fas fa-angle-double-left"></i></a>
+                        <a href="?page={{ members.previous_page_number }}{% if current_filters.status %}&status={{ current_filters.status }}{% endif %}{% if current_filters.join_date %}&join_date={{ current_filters.join_date }}{% endif %}{% if current_filters.sort %}&sort={{ current_filters.sort }}{% endif %}{% if current_filters.search %}&search={{ current_filters.search }}{% endif %}" class="pagination-btn"><i class="fas fa-angle-left"></i></a>
+                    {% endif %}
+
+                    {% for i in members.paginator.page_range %}
+                        {% if members.number == i %}
+                            <span class="pagination-btn active">{{ i }}</span>
+                        {% elif i > members.number|add:'-3' and i < members.number|add:'3' %}
+                            <a href="?page={{ i }}{% if current_filters.status %}&status={{ current_filters.status }}{% endif %}{% if current_filters.join_date %}&join_date={{ current_filters.join_date }}{% endif %}{% if current_filters.sort %}&sort={{ current_filters.sort }}{% endif %}{% if current_filters.search %}&search={{ current_filters.search }}{% endif %}" class="pagination-btn">{{ i }}</a>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if members.has_next %}
+                        <a href="?page={{ members.next_page_number }}{% if current_filters.status %}&status={{ current_filters.status }}{% endif %}{% if current_filters.join_date %}&join_date={{ current_filters.join_date }}{% endif %}{% if current_filters.sort %}&sort={{ current_filters.sort }}{% endif %}{% if current_filters.search %}&search={{ current_filters.search }}{% endif %}" class="pagination-btn"><i class="fas fa-angle-right"></i></a>
+                        <a href="?page={{ members.paginator.num_pages }}{% if current_filters.status %}&status={{ current_filters.status }}{% endif %}{% if current_filters.join_date %}&join_date={{ current_filters.join_date }}{% endif %}{% if current_filters.sort %}&sort={{ current_filters.sort }}{% endif %}{% if current_filters.search %}&search={{ current_filters.search }}{% endif %}" class="pagination-btn"><i class="fas fa-angle-double-right"></i></a>
+                    {% endif %}
+                </div>
+                {% endif %}
+
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-users-slash"></i>
+                    <h3>No Members Found</h3>
+                    <p>There are no members matching your criteria.</p>
+                    <!-- CHANGED: Add Member button in empty state now redirects to Django Admin -->
+                    <a href="/admin/auth/user/add/" class="btn-primary" target="_blank">
+                        <i class="fas fa-plus-circle"></i> Add New Member
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- UNCHANGED: ADD MEMBER MODAL - KEPT FOR REFERENCE BUT NOT USED -->
+<!-- 
+<div id="addMemberModal" class="modal">
+    ... modal content ...
+</div> 
+-->
+
+<!-- UNCHANGED: EDIT MEMBER MODAL - STILL WORKS -->
+<div id="editMemberModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-edit" style="color: var(--secondary);"></i> Edit Member</h2>
+            <button class="modal-close" onclick="closeEditModal()">&times;</button>
+        </div>
+        <form id="editMemberForm">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="update_member">
+            <input type="hidden" name="member_id" id="edit_member_id">
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-user"></i> Username</label>
+                <input type="text" name="username" id="edit_username" class="form-control" readonly>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" name="email" id="edit_email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-lock"></i> New Password (leave blank to keep current)</label>
+                <input type="password" name="new_password" id="edit_new_password" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-lock"></i> Confirm New Password</label>
+                <input type="password" name="new_password_confirm" id="edit_new_password_confirm" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-user"></i> First Name</label>
+                <input type="text" name="first_name" id="edit_first_name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-user"></i> Last Name</label>
+                <input type="text" name="last_name" id="edit_last_name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-phone"></i> Phone</label>
+                <input type="text" name="phone" id="edit_phone" class="form-control">
+            </div>
+            <div class="form-group">
+                <label class="form-label"><i class="fas fa-home"></i> Address</label>
+                <textarea name="address" id="edit_address" class="form-control" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="is_active" id="edit_is_active">
+                    <span>Active Member</span>
+                </label>
+            </div>
+            <div class="form-group" style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Update Member</button>
+                <button type="button" class="btn-secondary" onclick="closeEditModal()"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- UNCHANGED: DELETE CONFIRMATION MODAL -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Confirm Delete</h2>
+            <button class="modal-close" onclick="closeDeleteModal()">&times;</button>
+        </div>
+        <div style="text-align: center; padding: 1rem;">
+            <i class="fas fa-trash-alt" style="font-size: 3rem; color: var(--danger); margin-bottom: 1rem;"></i>
+            <p style="margin-bottom: 1rem; font-size: 1.1rem;">Are you sure you want to delete <strong id="deleteItemName"></strong>?</p>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">This action cannot be undone.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="confirmDeleteBtn" class="btn-danger"><i class="fas fa-trash-alt"></i> Delete</button>
+                <button type="button" class="btn-secondary" onclick="closeDeleteModal()"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- UNCHANGED: BULK DELETE CONFIRMATION MODAL -->
+<div id="bulkDeleteModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-exclamation-triangle" style="color: var(--danger);"></i> Confirm Bulk Delete</h2>
+            <button class="modal-close" onclick="closeBulkDeleteModal()">&times;</button>
+        </div>
+        <div style="text-align: center; padding: 1rem;">
+            <i class="fas fa-trash-alt" style="font-size: 3rem; color: var(--danger); margin-bottom: 1rem;"></i>
+            <p style="margin-bottom: 1rem; font-size: 1.1rem;">Are you sure you want to delete <strong id="bulkDeleteCount"></strong> member(s)?</p>
+            <p style="color: var(--text-secondary); margin-bottom: 2rem;">This action cannot be undone.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="confirmBulkDeleteBtn" class="btn-danger"><i class="fas fa-trash-alt"></i> Delete All</button>
+                <button type="button" class="btn-secondary" onclick="closeBulkDeleteModal()"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- UNCHANGED: TOGGLE STATUS MODAL -->
+<div id="toggleStatusModal" class="modal">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-sync-alt" style="color: var(--secondary);"></i> Toggle Status</h2>
+            <button class="modal-close" onclick="closeToggleModal()">&times;</button>
+        </div>
+        <div style="text-align: center; padding: 1rem;">
+            <i class="fas fa-exchange-alt" style="font-size: 3rem; color: var(--secondary); margin-bottom: 1rem;"></i>
+            <p style="margin-bottom: 1rem; font-size: 1.1rem;" id="toggleStatusMessage"></p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <button id="confirmToggleBtn" class="btn-primary"><i class="fas fa-check"></i> Confirm</button>
+                <button type="button" class="btn-secondary" onclick="closeToggleModal()"><i class="fas fa-times"></i> Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // CSRF Token
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    
+    // Current IDs
+    let currentMemberId = null;
+    let currentDeleteMemberId = null;
+    let currentToggleMemberId = null;
+    let selectedMemberIds = [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+        if (mobileToggle && sidebar) {
+            mobileToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                const icon = this.querySelector('i');
+                icon.className = sidebar.classList.contains('active') ? 'fas fa-times' : 'fas fa-bars';
+                document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+            });
+        }
+
+        // Search
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    const params = new URLSearchParams(window.location.search);
+                    params.set('search', this.value);
+                    window.location.search = params.toString();
+                }
+            });
+        }
+
+        // Form submissions - UNCHANGED: Edit, Delete, Bulk Delete, Toggle Status still work
+        document.getElementById('editMemberForm').addEventListener('submit', function(e) { e.preventDefault(); updateMember(); });
+        document.getElementById('confirmDeleteBtn').addEventListener('click', function() { deleteMember(currentDeleteMemberId); });
+        document.getElementById('confirmBulkDeleteBtn').addEventListener('click', function() { bulkDeleteMembers(selectedMemberIds); });
+        document.getElementById('confirmToggleBtn').addEventListener('click', function() { toggleMemberStatus(currentToggleMemberId); });
+        
+        updateBulkActions();
+    });
+
+    // UNCHANGED: UPDATE - Open Edit Modal
+    function openEditModal(memberId) {
+        currentMemberId = memberId;
+        fetch(`{% url "admin_member_list" %}?action=get_member_data&member_id=${memberId}`)
+            .then(r => r.json()).then(d => {
+                document.getElementById('edit_member_id').value = d.id;
+                document.getElementById('edit_username').value = d.username;
+                document.getElementById('edit_email').value = d.email;
+                document.getElementById('edit_first_name').value = d.first_name || '';
+                document.getElementById('edit_last_name').value = d.last_name || '';
+                document.getElementById('edit_phone').value = d.phone || '';
+                document.getElementById('edit_address').value = d.address || '';
+                document.getElementById('edit_is_active').checked = d.is_active;
+                document.getElementById('edit_new_password').value = '';
+                document.getElementById('edit_new_password_confirm').value = '';
+                document.getElementById('editMemberModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }).catch(() => showAlert('danger', 'Failed to load member data.'));
+    }
+    function closeEditModal() { document.getElementById('editMemberModal').classList.remove('active'); document.body.style.overflow = ''; }
+
+    // UNCHANGED: UPDATE - Update Member
+    function updateMember() {
+        const formData = new FormData(document.getElementById('editMemberForm'));
+        const newPass = formData.get('new_password');
+        const confirmPass = formData.get('new_password_confirm');
+        
+        if (newPass && newPass !== confirmPass) { showAlert('danger', 'New passwords do not match.'); return; }
+        if (newPass && newPass.length < 8) { showAlert('danger', 'Password must be at least 8 characters.'); return; }
+        
+        fetch('{% url "admin_member_list" %}', {
+            method: 'POST', headers: { 'X-CSRFToken': csrftoken }, body: formData
+        }).then(r => r.json()).then(d => {
+            if (d.success) { closeEditModal(); showAlert('success', d.message); setTimeout(() => location.reload(), 1500); }
+            else { showAlert('danger', d.error); }
+        }).catch(() => showAlert('danger', 'An error occurred.'));
+    }
+
+    // UNCHANGED: DELETE
+    function confirmDelete(memberId, memberName) {
+        currentDeleteMemberId = memberId;
+        document.getElementById('deleteItemName').textContent = memberName;
+        document.getElementById('deleteModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeDeleteModal() { document.getElementById('deleteModal').classList.remove('active'); document.body.style.overflow = ''; }
+
+    function deleteMember(memberId) {
+        const formData = new FormData();
+        formData.append('action', 'delete_member');
+        formData.append('member_id', memberId);
+        formData.append('csrfmiddlewaretoken', csrftoken);
+        
+        fetch('{% url "admin_member_list" %}', {
+            method: 'POST', headers: { 'X-CSRFToken': csrftoken }, body: formData
+        }).then(r => r.json()).then(d => {
+            if (d.success) { 
+                closeDeleteModal(); 
+                showAlert('success', d.message); 
+                document.getElementById(`member-row-${memberId}`).remove(); 
+                updateStats(); 
+            } else { 
+                showAlert('danger', d.error); 
+            }
+        }).catch(() => showAlert('danger', 'An error occurred.'));
+    }
+
+    // UNCHANGED: BULK DELETE
+    function confirmBulkDelete() {
+        const checkboxes = document.querySelectorAll('.member-checkbox:checked');
+        selectedMemberIds = Array.from(checkboxes).map(cb => cb.value);
+        if (selectedMemberIds.length === 0) { showAlert('warning', 'No members selected.'); return; }
+        document.getElementById('bulkDeleteCount').textContent = selectedMemberIds.length;
+        document.getElementById('bulkDeleteModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeBulkDeleteModal() { document.getElementById('bulkDeleteModal').classList.remove('active'); document.body.style.overflow = ''; }
+
+    function bulkDeleteMembers(ids) {
+        const formData = new FormData();
+        formData.append('action', 'bulk_delete_members');
+        ids.forEach(id => formData.append('member_ids[]', id));
+        formData.append('csrfmiddlewaretoken', csrftoken);
+        
+        fetch('{% url "admin_member_list" %}', {
+            method: 'POST', headers: { 'X-CSRFToken': csrftoken }, body: formData
+        }).then(r => r.json()).then(d => {
+            if (d.success) { 
+                closeBulkDeleteModal(); 
+                showAlert('success', d.message); 
+                setTimeout(() => location.reload(), 1500); 
+            } else { 
+                showAlert('danger', d.error); 
+            }
+        }).catch(() => showAlert('danger', 'An error occurred.'));
+    }
+
+    // UNCHANGED: TOGGLE STATUS
+    function toggleStatus(memberId, memberName) {
+        currentToggleMemberId = memberId;
+        const row = document.getElementById(`member-row-${memberId}`);
+        const isActive = row.querySelector('.badge').classList.contains('badge-success');
+        document.getElementById('toggleStatusMessage').innerHTML = `Are you sure you want to <strong>${isActive ? 'deactivate' : 'activate'}</strong> ${memberName}?`;
+        document.getElementById('toggleStatusModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeToggleModal() { document.getElementById('toggleStatusModal').classList.remove('active'); document.body.style.overflow = ''; }
+
+    function toggleMemberStatus(memberId) {
+        const formData = new FormData();
+        formData.append('action', 'toggle_member_status');
+        formData.append('member_id', memberId);
+        formData.append('csrfmiddlewaretoken', csrftoken);
+        
+        fetch('{% url "admin_member_list" %}', {
+            method: 'POST', headers: { 'X-CSRFToken': csrftoken }, body: formData
+        }).then(r => r.json()).then(d => {
+            if (d.success) {
+                closeToggleModal(); showAlert('success', d.message);
+                const row = document.getElementById(`member-row-${memberId}`);
+                const badge = row.querySelector('.badge');
+                const btn = row.querySelector('button[onclick*="toggleStatus"]');
+                if (d.is_active) {
+                    badge.className = 'badge badge-success'; badge.textContent = 'Active';
+                    btn.innerHTML = '<i class="fas fa-pause-circle"></i>'; btn.title = 'Deactivate';
+                } else {
+                    badge.className = 'badge badge-warning'; badge.textContent = 'Inactive';
+                    btn.innerHTML = '<i class="fas fa-play-circle"></i>'; btn.title = 'Activate';
+                }
+            } else { showAlert('danger', d.error); }
+        }).catch(() => showAlert('danger', 'An error occurred.'));
+    }
+
+    // UNCHANGED: BULK ACTIONS UI
+    function updateBulkActions() {
+        const checkboxes = document.querySelectorAll('.member-checkbox:checked');
+        const count = checkboxes.length;
+        const bulk = document.getElementById('bulkActions');
+        const selected = document.getElementById('selectedCount');
+        const header = document.getElementById('selectAllHeader');
+        const selectAll = document.getElementById('selectAllCheckbox');
+        
+        if (count > 0) { bulk.style.display = 'flex'; selected.textContent = count; } 
+        else { bulk.style.display = 'none'; }
+        
+        const total = document.querySelectorAll('.member-checkbox').length;
+        if (header) header.checked = count === total && total > 0;
+        if (selectAll) selectAll.checked = count === total && total > 0;
+    }
+
+    function toggleSelectAll() {
+        const selectAll = document.getElementById('selectAllCheckbox');
+        document.querySelectorAll('.member-checkbox').forEach(cb => cb.checked = selectAll.checked);
+        updateBulkActions();
+    }
+
+    function toggleSelectAllFromHeader() {
+        const selectAll = document.getElementById('selectAllHeader');
+        document.querySelectorAll('.member-checkbox').forEach(cb => cb.checked = selectAll.checked);
+        updateBulkActions();
+    }
+
+    function clearSelection() {
+        document.querySelectorAll('.member-checkbox').forEach(cb => cb.checked = false);
+        updateBulkActions();
+    }
+
+    // UTILITIES
+    function showAlert(type, message) {
+        document.querySelectorAll('.alert').forEach(a => a.remove());
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type} alert-dismissible fade show`;
+        alert.style.cssText = 'position: fixed; top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+        alert.innerHTML = `${message}<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>`;
+        document.body.appendChild(alert);
+        setTimeout(() => { alert.classList.remove('show'); setTimeout(() => alert.remove(), 300); }, 5000);
+    }
+
+    function updateStats() { location.reload(); }
+</script>
+{% endblock %}

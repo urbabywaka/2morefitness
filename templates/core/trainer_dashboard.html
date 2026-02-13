@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Trainer Dashboard - 2moreFitness{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dashboard-header">
+        <div class="container">
+            <div class="dashboard-title">
+                <div>
+                    <h1>Trainer Dashboard</h1>
+                    <p class="dashboard-welcome">Welcome, {{ trainer.user.get_full_name }}!</p>
+                </div>
+                <div class="dashboard-actions">
+                    <a href="{% url 'trainer_profile' %}" class="btn btn-outline">My Profile</a>
+                    <a href="{% url 'logout' %}" class="btn btn-secondary">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="dashboard-content container">
+        <!-- Trainer Info -->
+        <div class="dashboard-section">
+            <div class="dashboard-section-header">
+                <h3 class="dashboard-section-title">My Information</h3>
+            </div>
+            <div class="grid grid-3">
+                <div class="stat-card">
+                    <div class="stat-card-title">Specialization</div>
+                    <div class="stat-card-value" style="font-size: 1.2rem;">{{ trainer.specialization }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Experience</div>
+                    <div class="stat-card-value">{{ trainer.years_of_experience }}</div>
+                    <div class="stat-card-subtitle">years</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card-title">Active Classes</div>
+                    <div class="stat-card-value">{{ classes.count }}</div>
+                    <div class="stat-card-subtitle">classes</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- My Classes -->
+        <div class="dashboard-section">
+            <div class="dashboard-section-header">
+                <h3 class="dashboard-section-title">My Classes</h3>
+            </div>
+            
+            {% if classes %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Class Name</th>
+                        <th>Day</th>
+                        <th>Time</th>
+                        <th>Duration</th>
+                        <th>Enrolled</th>
+                        <th>Difficulty</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for class in classes %}
+                    <tr>
+                        <td><strong>{{ class.name }}</strong></td>
+                        <td>{{ class.get_day_of_week_display }}</td>
+                        <td>{{ class.time|time:"g:i A" }}</td>
+                        <td>{{ class.duration }} min</td>
+                        <td>{{ class.enrolled_count }}/{{ class.max_capacity }}</td>
+                        <td><span class="badge badge-{{ class.difficulty }}">{{ class.get_difficulty_display }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <p>No classes assigned yet</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

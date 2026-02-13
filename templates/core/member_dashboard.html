@@ -1,0 +1,1293 @@
+
+{% load static %}
+
+
+{% block extra_css %}
+<!-- Font Awesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+<style>
+    /* ===== INHERITED FROM PROFILE.HTML ===== */
+    :root {
+        --sidebar-width: 280px;
+        --header-height: 70px;
+        --sidebar-bg: #1a1d28;
+        --sidebar-hover: #2a2d3a;
+        --sidebar-active: #FF6B00;
+        --card-bg: #ffffff;
+        --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        --border-color: #eef2f7;
+        --text-primary: #2d3748;
+        --text-secondary: #718096;
+        --text-muted: #a0aec0;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --info: #3b82f6;
+        --secondary: #FF6B00;
+        --secondary-dark: #e55a00;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #f7fafc;
+        color: var(--text-primary);
+        overflow-x: hidden;
+    }
+
+    /* ===== DASHBOARD LAYOUT ===== */
+    .dashboard-layout {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .dashboard-sidebar {
+        width: var(--sidebar-width);
+        background: var(--sidebar-bg);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        position: fixed;
+        height: 100vh;
+        overflow-y: auto;
+        transition: transform 0.3s ease;
+        z-index: 1000;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+    }
+
+    .sidebar-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        text-align: center;
+    }
+
+    .sidebar-logo {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        
+    }
+
+    .sidebar-logo-img {
+        height: 40px;
+        width: auto;
+        max-width: 200px;
+        object-fit: contain;
+    }
+
+    .sidebar-logo span {
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .sidebar-logo span span {
+        color: var(--secondary);
+    }
+
+    .sidebar-nav {
+        flex: 1;
+        padding: 1.5rem 0;
+    }
+
+    .nav-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .nav-section-title {
+        padding: 0.5rem 1.5rem;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        opacity: 0.7;
+    }
+
+    .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.875rem 1.5rem;
+        color: rgba(255,255,255,0.8);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border-left: 3px solid transparent;
+    }
+
+    .nav-item:hover {
+        background: var(--sidebar-hover);
+        color: white;
+        border-left-color: var(--secondary);
+    }
+
+    .nav-item.active {
+        background: rgba(255,107,0,0.1);
+        color: var(--secondary);
+        border-left-color: var(--secondary);
+    }
+
+    .nav-item i {
+        width: 20px;
+        text-align: center;
+        font-size: 1.1rem;
+    }
+
+    .nav-badge {
+        margin-left: auto;
+        background: var(--secondary);
+        color: white;
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+        border-radius: 10px;
+        min-width: 20px;
+        text-align: center;
+    }
+
+    .sidebar-footer {
+        padding: 1.5rem;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        margin-top: auto;
+    }
+
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+    }
+
+    .user-info h4 {
+        font-size: 0.9rem;
+        color: white;
+        margin-bottom: 0.125rem;
+    }
+
+    .user-info p {
+        font-size: 0.75rem;
+        color: rgba(255,255,255,0.7);
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .dashboard-main {
+        flex: 1;
+        margin-left: var(--sidebar-width);
+        min-height: 100vh;
+        transition: margin-left 0.3s ease;
+    }
+
+    /* ===== TOP BAR ===== */
+    .dashboard-topbar {
+        height: var(--header-height);
+        background: white;
+        border-bottom: 1px solid var(--border-color);
+        padding: 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .topbar-left {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .mobile-toggle {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        transition: color 0.2s ease;
+    }
+
+    .mobile-toggle:hover {
+        color: var(--text-primary);
+    }
+
+    .topbar-logo {
+        display: none;
+    }
+
+    .page-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .topbar-search {
+        flex: 1;
+        max-width: 400px;
+        position: relative;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 0.75rem 1rem 0.75rem 2.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        font-size: 0.9rem;
+        background: #f8fafc;
+        transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--secondary);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(255,107,0,0.1);
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 0.875rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+    }
+
+    .topbar-actions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .notifications {
+        position: relative;
+    }
+
+    .notification-btn {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.25rem;
+        cursor: pointer;
+        padding: 0.5rem;
+        position: relative;
+        transition: color 0.2s ease;
+    }
+
+    .notification-btn:hover {
+        color: var(--text-primary);
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: 0;
+        right: 0;
+        background: var(--danger);
+        color: white;
+        font-size: 0.7rem;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* ===== CONTENT AREA ===== */
+    .dashboard-content {
+        padding: 2rem;
+    }
+
+    .content-header {
+        margin-bottom: 2rem;
+    }
+
+    .content-header h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .content-header p {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+    }
+
+    /* ===== WELCOME BANNER ===== */
+    .welcome-banner {
+        background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+        border-radius: 0.75rem;
+        padding: 2rem;
+        color: white;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: var(--card-shadow);
+    }
+
+    .welcome-text h1 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .welcome-text p {
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+
+    .welcome-stats {
+        display: flex;
+        gap: 2rem;
+    }
+
+    .welcome-stat {
+        text-align: center;
+    }
+
+    .welcome-stat .number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        display: block;
+    }
+
+    .welcome-stat .label {
+        font-size: 0.875rem;
+        opacity: 0.9;
+    }
+
+    /* ===== STATS GRID ===== */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-color);
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .stat-details h3 {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.25rem;
+        font-weight: 500;
+    }
+
+    .stat-number {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: var(--text-primary);
+        display: block;
+        line-height: 1.2;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+    }
+
+    /* ===== MEMBERSHIP CARD ===== */
+    .membership-card {
+        background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+        border-radius: 0.75rem;
+        padding: 2rem;
+        color: white;
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: var(--card-shadow);
+    }
+
+    .membership-info h3 {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .plan-name {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .plan-price {
+        font-size: 1.25rem;
+        opacity: 0.9;
+    }
+
+    .membership-dates {
+        display: flex;
+        gap: 2rem;
+        margin-top: 1rem;
+    }
+
+    .date-item {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .date-label {
+        font-size: 0.75rem;
+        opacity: 0.8;
+        margin-bottom: 0.25rem;
+    }
+
+    .date-value {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    .progress-container {
+        width: 200px;
+    }
+
+    .progress-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+    }
+
+    .progress-bar {
+        height: 8px;
+        background: rgba(255,255,255,0.2);
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: white;
+        border-radius: 4px;
+        transition: width 0.3s ease;
+    }
+
+    /* ===== CARD STYLES ===== */
+    .card {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: var(--card-shadow);
+        border: 1px solid var(--border-color);
+        margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .card-title i {
+        color: var(--secondary);
+    }
+
+    .card-link {
+        color: var(--secondary);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: gap 0.2s ease;
+        background: rgba(255,107,0,0.1);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+    }
+
+    .card-link:hover {
+        gap: 0.75rem;
+        background: var(--secondary);
+        color: white;
+    }
+
+    /* ===== CLASS CARDS ===== */
+    .classes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .class-card {
+        background: #f8fafc;
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+        border: 1px solid var(--border-color);
+        transition: all 0.2s ease;
+    }
+
+    .class-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--card-shadow);
+        border-color: var(--secondary);
+    }
+
+    .class-name {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 1rem;
+    }
+
+    .class-detail {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .class-detail i {
+        width: 16px;
+        color: var(--secondary);
+    }
+
+    /* ===== ATTENDANCE LIST ===== */
+    .attendance-list {
+        list-style: none;
+    }
+
+    .attendance-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 0;
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .attendance-item:last-child {
+        border-bottom: none;
+    }
+
+    .attendance-date {
+        font-weight: 600;
+        color: var(--text-primary);
+        width: 100px;
+    }
+
+    .attendance-time {
+        color: var(--text-secondary);
+        margin-left: 1rem;
+    }
+
+    .attendance-status {
+        margin-left: auto;
+    }
+
+    /* ===== BADGES ===== */
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 2rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .badge-success {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--success);
+    }
+
+    .badge-warning {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--warning);
+    }
+
+    .badge-info {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--info);
+    }
+
+    /* ===== BUTTON STYLES ===== */
+    .btn-primary {
+        background: var(--secondary);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        font-size: 0.95rem;
+    }
+
+    .btn-primary:hover {
+        background: var(--secondary-dark);
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(255,107,0,0.2);
+    }
+
+    .btn-secondary {
+        background: #f8fafc;
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: all 0.2s ease;
+        cursor: pointer;
+        font-size: 0.95rem;
+    }
+
+    .btn-secondary:hover {
+        background: #eef2f7;
+        transform: translateY(-1px);
+    }
+
+    .btn-outline {
+        padding: 0.5rem 1.25rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        background: white;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .btn-outline:hover {
+        background: var(--secondary);
+        color: white;
+        border-color: var(--secondary);
+    }
+
+    .btn-sm {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.75rem;
+    }
+
+    /* ===== QUICK ACTIONS ===== */
+    .quick-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        background: #f8fafc;
+        border-radius: 0.75rem;
+        text-decoration: none;
+        color: var(--text-primary);
+        transition: all 0.2s ease;
+        border: 1px solid var(--border-color);
+    }
+
+    .action-btn:hover {
+        background: var(--secondary);
+        color: white;
+        transform: translateY(-2px);
+        border-color: var(--secondary);
+    }
+
+    .action-btn:hover i {
+        color: white;
+    }
+
+    .action-btn i {
+        font-size: 1.25rem;
+        color: var(--secondary);
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+        text-align: center;
+        padding: 3rem 1.5rem;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: var(--text-muted);
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        font-size: 1.1rem;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+    }
+
+    .empty-state p {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+        .dashboard-sidebar {
+            transform: translateX(-100%);
+        }
+
+        .dashboard-sidebar.active {
+            transform: translateX(0);
+        }
+
+        .dashboard-main {
+            margin-left: 0;
+        }
+
+        .mobile-toggle {
+            display: block;
+        }
+
+        .topbar-logo {
+            display: block;
+        }
+
+        .welcome-banner {
+            flex-direction: column;
+            text-align: center;
+            gap: 1rem;
+        }
+
+        .membership-card {
+            flex-direction: column;
+            text-align: center;
+            gap: 1.5rem;
+        }
+
+        .progress-container {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-content {
+            padding: 1rem;
+        }
+
+        .dashboard-topbar {
+            padding: 0 1rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .welcome-stats {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .membership-dates {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .classes-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .quick-actions {
+            grid-template-columns: 1fr;
+        }
+
+        .topbar-search {
+            display: none;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .dashboard-topbar {
+            padding: 0 0.75rem;
+        }
+
+        .content-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .card {
+            padding: 1rem;
+        }
+
+        .stat-card {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+    <!-- Sidebar - Member Version -->
+    <div class="dashboard-sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <span>2MORE<span>FITNESS</span></span>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Main</div>
+                <a href="{% url 'member_dashboard' %}" class="nav-item active">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{% url 'member_profile' %}" class="nav-item">
+                    <i class="fas fa-user-alt"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="{% url 'member_memberships' %}" class="nav-item">
+                    <i class="fas fa-crown"></i>
+                    <span>Membership</span>
+                    {% if active_membership %}
+                    <span class="nav-badge">Active</span>
+                    {% endif %}
+                </a>
+                
+                <a href="{% url 'member_class_list' %}" class="nav-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>My Classes</span>
+                </a>
+                <a href="{% url 'class_list' %}" class="nav-item">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Browse Classes</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">Account</div>
+                <a href="{% url 'member_profile' %}" class="nav-item">
+                    <i class="fas fa-sliders-h"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="{% url 'logout' %}" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <div class="user-avatar">
+                    {{ user.first_name|first|default:user.username|first|upper }}
+                </div>
+                <div class="user-info">
+                    <h4>{{ user.get_full_name|default:user.username }}</h4>
+                    <p>Member since {{ user.date_joined|date:"M Y" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-main">
+        <!-- Top Bar -->
+        <div class="dashboard-topbar">
+            <div class="topbar-left">
+                <button class="mobile-toggle" id="mobileToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="topbar-logo">
+                    <span style="font-weight: 700; font-size: 1.2rem; color: var(--text-primary);">
+                        2more<span style="color: #FF6B00;">Fitness</span>
+                    </span>
+                </div>
+             
+            </div>
+            
+            <div class="topbar-search">
+                <i class="fas fa-search search-icon"></i>
+                <input type="text" class="search-input" placeholder="Search classes, trainers...">
+            </div>
+
+            <div class="topbar-actions">
+                <div class="notifications">
+                    
+                    </button>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        {{ user.first_name|first|default:user.username|first|upper }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="dashboard-content">
+            <!-- Header -->
+            <div class="content-header">
+                <h1>My Dashboard</h1>
+                <p>Welcome back, {{ user.first_name|default:user.username }}!</p>
+            </div>
+            
+
+          
+
+          
+
+            <!-- Statistics Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-crown"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Membership Status</h3>
+                        <span class="stat-number">
+                            {% if active_membership %}
+                            Active
+                            {% else %}
+                            Inactive
+                            {% endif %}
+                        </span>
+                        <span class="stat-label">
+                            {% if active_membership %}
+                            {{ active_membership.plan.name }}
+                            {% else %}
+                            No active plan
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Days Remaining</h3>
+                        <span class="stat-number">{{ membership_days_left|default:"0" }}</span>
+                        <span class="stat-label">Until expiration</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Upcoming Classes</h3>
+                        <span class="stat-number">{{ upcoming_classes|length|default:"0" }}</span>
+                        <span class="stat-label">This week</span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-details">
+                        <h3>Total Check-ins</h3>
+                        <span class="stat-number">{{ checkins_count|default:"0" }}</span>
+                        <span class="stat-label">Lifetime visits</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Membership Section -->
+            {% if active_membership %}
+            <div class="membership-card">
+                <div class="membership-info">
+                    <h3>Current Membership</h3>
+                    <div class="plan-name">{{ active_membership.plan.name }}</div>
+                    <div class="plan-price">₱{{ active_membership.plan.price }}/month</div>
+                    
+                    <div class="membership-dates">
+                        <div class="date-item">
+                            <span class="date-label">Started</span>
+                            <span class="date-value">{{ active_membership.start_date|date:"M d, Y" }}</span>
+                        </div>
+                        <div class="date-item">
+                            <span class="date-label">Expires</span>
+                            <span class="date-value">{{ active_membership.end_date|date:"M d, Y" }}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="progress-container">
+                    <div class="progress-info">
+                        <span>{{ membership_days_left }} days left</span>
+                        <span>{{ membership_percentage|default:"75" }}%</span>
+                    </div>
+                    <div class="progress-bar">
+                       
+                    </div>
+                    <div style="margin-top: 1rem;">
+                        <a href="{% url 'membership_plans' %}" class="btn-outline btn-sm" style="background: rgba(255,255,255,0.2); color: white; border-color: rgba(255,255,255,0.5);">
+                            <i class="fas fa-sync-alt"></i> Renew/Upgrade
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="card" style="text-align: center; padding: 3rem;">
+                <i class="fas fa-crown" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem;"></i>
+                <h3 style="margin-bottom: 0.5rem;">No Active Membership</h3>
+                <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Subscribe to a membership plan to access all gym features</p>
+                <a href="{% url 'membership_plans' %}" class="btn-primary">
+                    <i class="fas fa-gem"></i> View Membership Plans
+                </a>
+            </div>
+            {% endif %}
+
+            <!-- Upcoming Classes Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        Upcoming Classes
+                    </h3>
+                    <a href="{% url 'class_list' %}" class="card-link">
+                        Browse All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                {% if upcoming_classes %}
+                <div class="classes-grid">
+                    {% for class in upcoming_classes %}
+                    <div class="class-card">
+                        <h4 class="class-name">{{ class.name }}</h4>
+                        <div class="class-detail">
+                            <i class="fas fa-user-tie"></i>
+                            {{ class.trainer.user.get_full_name|default:"Trainer" }}
+                        </div>
+                        <div class="class-detail">
+                            <i class="fas fa-clock"></i>
+                            {{ class.schedule|date:"D, M d - h:i A" }}
+                        </div>
+                        <div class="class-detail">
+                            <i class="fas fa-hourglass-half"></i>
+                            {{ class.duration }} minutes
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <a href="{% url 'class_detail' class.id %}" class="btn-outline btn-sm">
+                                View Details <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-calendar-times"></i>
+                    <h3>No Upcoming Classes</h3>
+                    <p>You haven't enrolled in any classes yet</p>
+                    <a href="{% url 'class_list' %}" class="btn-outline">
+                        <i class="fas fa-search"></i> Browse Classes
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Recent Attendance Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-history"></i>
+                        Recent Check-ins
+                    </h3>
+                    <a href="{% url 'attendance_history' %}" class="card-link">
+                        View All <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                {% if recent_attendance %}
+                <ul class="attendance-list">
+                    {% for attendance in recent_attendance %}
+                    <li class="attendance-item">
+                        <span class="attendance-date">{{ attendance.date|date:"M d, Y" }}</span>
+                        <span class="attendance-time">
+                            <i class="fas fa-sign-in-alt"></i> {{ attendance.check_in|time:"h:i A" }}
+                        </span>
+                        {% if attendance.check_out %}
+                        <span class="attendance-time">
+                            <i class="fas fa-sign-out-alt"></i> {{ attendance.check_out|time:"h:i A" }}
+                        </span>
+                        {% endif %}
+                        <span class="attendance-status">
+                            <span class="badge badge-success">
+                                <i class="fas fa-check-circle"></i> Present
+                            </span>
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>No Check-ins Yet</h3>
+                    <p>Your attendance history will appear here</p>
+                    <button class="btn-outline" onclick="alert('Please check-in at the gym reception')">
+                        <i class="fas fa-qrcode"></i> Check In Now
+                    </button>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-rocket"></i>
+                        Quick Actions
+                    </h3>
+                </div>
+                <div class="quick-actions">
+                    <a href="{% url 'membership_plans' %}" class="action-btn">
+                        <i class="fas fa-crown"></i>
+                        <span>Buy Membership</span>
+                    </a>
+                    <a href="{% url 'class_list' %}" class="action-btn">
+                        <i class="fas fa-dumbbell"></i>
+                        <span>Book a Class</span>
+                    </a>
+                    <a href="{% url 'member_profile' %}" class="action-btn">
+                        <i class="fas fa-user-edit"></i>
+                        <span>Update Profile</span>
+                    </a>
+                    <a href="{% url 'member_memberships' %}" class="action-btn">
+                        <i class="fas fa-history"></i>
+                        <span>Membership History</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile sidebar toggle
+        const mobileToggle = document.getElementById('mobileToggle');
+        const sidebar = document.getElementById('sidebar');
+        
+        if (mobileToggle && sidebar) {
+            mobileToggle.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+                const icon = this.querySelector('i');
+                if (sidebar.classList.contains('active')) {
+                    icon.className = 'fas fa-times';
+                    document.body.style.overflow = 'hidden';
+                } else {
+                    icon.className = 'fas fa-bars';
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            document.addEventListener('click', function(event) {
+                if (window.innerWidth <= 1024 && 
+                    !sidebar.contains(event.target) && 
+                    !mobileToggle.contains(event.target) &&
+                    sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                    mobileToggle.querySelector('i').className = 'fas fa-bars';
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 1024 && sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                    mobileToggle.querySelector('i').className = 'fas fa-bars';
+                    document.body.style.overflow = '';
+                }
+            });
+        }
+
+        // Animate progress bar
+        const progressFill = document.querySelector('.progress-fill');
+        if (progressFill) {
+            const width = progressFill.style.width;
+            progressFill.style.width = '0%';
+            setTimeout(() => {
+                progressFill.style.width = width;
+            }, 300);
+        }
+
+        // Logo fallback
+        const sidebarLogoImg = document.querySelector('.sidebar-logo-img');
+        if (sidebarLogoImg) {
+            sidebarLogoImg.addEventListener('error', function() {
+                const parent = this.parentElement;
+                parent.innerHTML = `<span>2more<span>Fitness</span></span>`;
+            });
+        }
+    });
+</script>
+{% endblock %}

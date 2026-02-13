@@ -1,0 +1,2035 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}2moreFitness - Affordable. Accessible. Authentic.{% endblock %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800;900&family=Dancing+Script:wght@700&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+
+      
+        
+        <!-- Mobile Menu Button -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <ul>
+            <li><a href="/" class="mobile-nav-link active"><i class="fas fa-home"></i> Home</a></li>
+            <li><a href="#features" class="mobile-nav-link"><i class="fas fa-star"></i> Features</a></li>
+            <li><a href="#plans" class="mobile-nav-link"><i class="fas fa-crown"></i> Plans</a></li>
+            <li><a href="#franchise" class="mobile-nav-link"><i class="fas fa-store"></i> Franchise</a></li>
+            <li><a href="#corporate" class="mobile-nav-link"><i class="fas fa-briefcase"></i> Corporate</a></li>
+            <li><a href="#contact" class="mobile-nav-link"><i class="fas fa-phone"></i> Contact</a></li>
+            <li><a href="{% url 'register' %}" class="mobile-nav-link mobile-cta"><i class="fas fa-dumbbell"></i> Join Now</a></li>
+        </ul>
+    </div>
+</header>
+
+<!-- Hero Section with Images and Text -->
+<section class="hero" id="home">
+    <div class="container">
+        <div class="hero-content">
+            <h2>‎ </h2> 
+             <h2>‎ </h2> 
+               <h2>‎ </h2> 
+       
+            
+            <!-- Main Headline - UPDATED WITH IMAGE FONTS -->
+            <h1 class="hero-headline">
+                <span class="line1">#2TRAINMORE</span>
+                <span class="line2">with 2MoreFitness</span>
+            </h1>
+            
+          
+            
+          
+            
+            
+            <!-- Hero CTA -->
+            <div class="hero-cta">
+                <div class="cta-buttons">
+                    <a href="{% url 'register' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-dumbbell"></i>
+                        <span>Start Your Journey</span>
+                    </a>
+                    <a href="#plans" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-crown"></i>
+                        <span>View Plans</span>
+                    </a>
+                </div>
+                <h2>‎ </h2> 
+                  <h2>‎ </h2> 
+             <h2>‎ </h2>
+               <h2>‎ </h2> 
+  
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Gym Tour Preview -->
+<section class="section gym-preview">
+    <div class="container">
+        <div class="section-header">
+            <h2>Experience Our World-Class Facilities</h2>
+            <p>Take a virtual tour of our premium fitness centers</p>
+        </div>
+        
+        <div class="preview-grid">
+            <div class="preview-card">
+                <div class="preview-image">
+                    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Cardio Zone">
+                    <div class="preview-overlay">
+                        <h4><i class="fas fa-running"></i> Cardio Zone</h4>
+                    </div>
+                </div>
+                <div class="preview-content">
+                    <h3>Cardio Area</h3>
+                    <p>Our spacious cardio zone features the latest treadmills, bikes, and ellipticals from leading brands like Life Fitness and Technogym.</p>
+                </div>
+            </div>
+            
+            <div class="preview-card">
+                <div class="preview-image">
+                    <img src="https://images.unsplash.com/photo-1534367507877-0edd93bd013b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Free Weights">
+                    <div class="preview-overlay">
+                        <h4><i class="fas fa-weight-hanging"></i> Free Weights</h4>
+                    </div>
+                </div>
+                <div class="preview-content">
+                    <h3>Free Weights Area</h3>
+                    <p>Comprehensive free weights section with equipment ranging from 2.5kg to 50kg dumbbells. Perfect for strength training and muscle building.</p>
+                </div>
+            </div>
+            
+            <div class="preview-card">
+                <div class="preview-image">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Group Classes">
+                    <div class="preview-overlay">
+                        <h4><i class="fas fa-users"></i> Group Studio</h4>
+                    </div>
+                </div>
+                <div class="preview-content">
+                    <h3>Group Exercise Studio</h3>
+                    <p>Spacious studio for group classes including yoga, Zumba, HIIT, and spin classes. Led by certified instructors with vibrant music.</p>
+                </div>
+            </div>
+            
+            <div class="preview-card">
+                <div class="preview-image">
+                    <img src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Locker Room">
+                    <div class="preview-overlay">
+                        <h4><i class="fas fa-shower"></i> Premium Lockers</h4>
+                    </div>
+                </div>
+                <div class="preview-content">
+                    <h3>Premium Locker Rooms</h3>
+                    <p>Clean, spacious locker rooms with showers, changing areas, and secure lockers. Complimentary towels and toiletries provided.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="preview-cta">
+            <a href="#" class="btn btn-outline">
+                <i class="fas fa-video"></i>
+                Watch Full Virtual Tour
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section with Images -->
+<section class="section features" id="features">
+    <div class="container">
+        <h2>‎ </h2> 
+        <div class="section-header">
+            <h2>Why Choose 2moreFitness</h2>
+            <p>Premium fitness made accessible for everyone</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-image">
+                    <img src="https://images.unsplash.com/photo-1549060279-7e168fce7090?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Affordable Fitness">
+                    <div class="feature-icon-overlay">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                </div>
+                <div class="feature-content">
+                    <h3>Affordable Plans</h3>
+                    <p>Flexible membership options that fit your budget without compromising quality. Starting from just ₱699/month.</p>
+                    <div class="feature-details">
+                        <span class="price-tag">From ₱699/month</span>
+                        <a href="#plans" class="feature-link">View Plans <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-image">
+                    <img src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Multiple Locations">
+                    <div class="feature-icon-overlay">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                </div>
+                <div class="feature-content">
+                    <h3>Multiple Locations</h3>
+                    <p>Conveniently located across metro cities for easy access anytime. Find a gym near your home or workplace.</p>
+                    <div class="feature-details">
+                        <span class="location-count">15+ Branches</span>
+                        <a href="#" class="feature-link">Find Location <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-image">
+                    <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Modern Equipment">
+                    <div class="feature-icon-overlay">
+                        <i class="fas fa-dumbbell"></i>
+                    </div>
+                </div>
+                <div class="feature-content">
+                    <h3>Modern Equipment</h3>
+                    <p>State-of-the-art machines and facilities for optimal workouts. Equipment updated quarterly for your safety.</p>
+                    <div class="feature-details">
+                        <span class="equipment-count">200+ Machines</span>
+                        <a href="#" class="feature-link">View Equipment <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <div class="feature-image">
+                    <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Expert Trainers">
+                    <div class="feature-icon-overlay">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                </div>
+                <div class="feature-content">
+                    <h3>Expert Trainers</h3>
+                    <p>Certified professionals guiding you towards your fitness goals. Get personalized attention and proper form guidance.</p>
+                    <div class="feature-details">
+                        <span class="trainer-count">100+ Certified</span>
+                        <a href="#" class="feature-link">Meet Trainers <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Additional Benefits -->
+        <div class="additional-benefits">
+            <div class="benefit-box">
+                <i class="fas fa-wifi"></i>
+                <h4>Free High-Speed WiFi</h4>
+                <p>Stay connected while you train with our complimentary WiFi</p>
+            </div>
+            <div class="benefit-box">
+                <i class="fas fa-car"></i>
+                <h4>Ample Parking</h4>
+                <p>Convenient parking facilities at all locations</p>
+            </div>
+            <div class="benefit-box">
+                <i class="fas fa-concierge-bell"></i>
+                <h4>Friendly Staff</h4>
+                <p>Always ready to assist you with your fitness journey</p>
+            </div>
+            <div class="benefit-box">
+                <i class="fas fa-snowflake"></i>
+                <h4>Air-Conditioned</h4>
+                <p>Comfortable training environment year-round</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Success Stories -->
+<section class="section success-stories">
+    <div class="container">
+        <div class="section-header">
+            <h2>Success Stories</h2>
+            <p>Real people, real results with 2moreFitness</p>
+        </div>
+        
+        <div class="stories-grid">
+            <div class="story-card">
+                <div class="story-image">
+                    <img src="https://images.unsplash.com/photo-1574680178050-55c6a6a96e0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Success Story 1">
+                </div>
+                <div class="story-content">
+                    <h3>Mark's Transformation</h3>
+                    <p>"Lost 25kg in 6 months with the help of 2moreFitness trainers. The supportive environment kept me motivated!"</p>
+                    <div class="story-author">
+                        <strong>Mark Santos</strong>
+                        <span>Member since 2022</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="story-card">
+                <div class="story-image">
+                    <img src="https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Success Story 2">
+                </div>
+                <div class="story-content">
+                    <h3>Sarah's Fitness Journey</h3>
+                    <p>"The group classes are amazing! I found my fitness family here. Lost weight and gained confidence."</p>
+                    <div class="story-author">
+                        <strong>Sarah Lim</strong>
+                        <span>Member since 2021</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="story-card">
+                <div class="story-image">
+                    <img src="https://images.unsplash.com/photo-1548690312-e3b507d8c110?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Success Story 3">
+                </div>
+                <div class="story-content">
+                    <h3>John's Strength Gains</h3>
+                    <p>"From beginner to competing in local bodybuilding. The equipment and coaching at 2moreFitness made it possible."</p>
+                    <div class="story-author">
+                        <strong>John Reyes</strong>
+                        <span>Member since 2020</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Membership Plans -->
+<section class="section plans bg-light" id="plans">
+    <div class="container">
+        <div class="section-header">
+            <h2>Membership Plans</h2>
+            <p>Choose the perfect plan for your fitness journey</p>
+        </div>
+        
+        <div class="plans-grid">
+            <div class="plan-card">
+                <div class="plan-header">
+                    <h3>Basic</h3>
+                    <div class="plan-price">
+                        <span class="amount">₱1,299</span>
+                        <span class="period">/month</span>
+                    </div>
+                </div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i> Gym Access</li>
+                    <li><i class="fas fa-check"></i> Free Weights Area</li>
+                    <li><i class="fas fa-check"></i> Cardio Machines</li>
+                    <li><i class="fas fa-check"></i> Locker Room</li>
+                </ul>
+                <a href="{% url 'register' %}" class="btn btn-outline">Choose Plan</a>
+            </div>
+            
+            <div class="plan-card popular">
+                <div class="plan-badge">MOST POPULAR</div>
+                <div class="plan-header">
+                    <h3>Premium</h3>
+                    <div class="plan-price">
+                        <span class="amount">₱2,499</span>
+                        <span class="period">/month</span>
+                    </div>
+                </div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i> All Basic Features</li>
+                    <li><i class="fas fa-check"></i> Group Classes</li>
+                    <li><i class="fas fa-check"></i> Personal Training</li>
+                    <li><i class="fas fa-check"></i> Nutrition Guidance</li>
+                </ul>
+                <a href="{% url 'register' %}" class="btn btn-primary">Choose Plan</a>
+            </div>
+            
+            <div class="plan-card">
+                <div class="plan-header">
+                    <h3>Ultimate</h3>
+                    <div class="plan-price">
+                        <span class="amount">₱3,999</span>
+                        <span class="period">/month</span>
+                    </div>
+                </div>
+                <ul class="plan-features">
+                    <li><i class="fas fa-check"></i> All Premium Features</li>
+                    <li><i class="fas fa-check"></i> 24/7 Access</li>
+                    <li><i class="fas fa-check"></i> Spa & Sauna</li>
+                    <li><i class="fas fa-check"></i> Guest Passes</li>
+                </ul>
+                <a href="{% url 'register' %}" class="btn btn-outline">Choose Plan</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Franchise Opportunity -->
+<section class="section franchise" id="franchise">
+    <div class="container">
+        <div class="franchise-content">
+            <div class="franchise-image">
+                <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Franchise Opportunity">
+                <div class="franchise-image-overlay">
+                    <h3><i class="fas fa-chart-line"></i> Growing Network</h3>
+                    <p>Join 50+ successful franchises nationwide</p>
+                </div>
+            </div>
+            <div class="franchise-text">
+                <h2>Own a 2moreFitness</h2>
+                <p>Join our growing network of fitness centers and become part of the fitness revolution. We provide complete support for franchise owners including training, marketing, and operational guidance.</p>
+                <div class="franchise-stats">
+                    <div class="franchise-stat">
+                        <div class="stat-value">95%</div>
+                        <div class="stat-label">Success Rate</div>
+                    </div>
+                    <div class="franchise-stat">
+                        <div class="stat-value">18 mos</div>
+                        <div class="stat-label">Average ROI</div>
+                    </div>
+                    <div class="franchise-stat">
+                        <div class="stat-value">₱3M+</div>
+                        <div class="stat-label">Annual Revenue</div>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-secondary">
+                    <span>Explore Franchising</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Corporate Wellness -->
+<section class="section corporate" id="corporate">
+    <div class="container">
+        <div class="corporate-content">
+            <h2>Corporate Wellness Programs</h2>
+            <p>Boost employee health and productivity with our customized corporate wellness solutions. Healthier employees lead to better business results.</p>
+            
+            <div class="corporate-benefits">
+                <div class="corporate-benefit">
+                    <i class="fas fa-heartbeat"></i>
+                    <h4>Healthier Workforce</h4>
+                    <p>Reduce absenteeism by up to 30%</p>
+                </div>
+                <div class="corporate-benefit">
+                    <i class="fas fa-chart-line"></i>
+                    <h4>Increased Productivity</h4>
+                    <p>Boost productivity by 15-20%</p>
+                </div>
+                <div class="corporate-benefit">
+                    <i class="fas fa-users"></i>
+                    <h4>Team Building</h4>
+                    <p>Improve team morale and collaboration</p>
+                </div>
+            </div>
+            
+            <a href="#" class="btn btn-primary">
+                <span>Corporate Plans</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="section contact" id="contact">
+    <div class="container">
+        <div class="contact-content">
+            <h2>Contact Us</h2>
+            <p>Have questions? We're here to help you start your fitness journey.</p>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <span>(02) 1234-5678</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>info@2morefitness.com</span>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-location-dot"></i>
+                    <span>Multiple Locations Nationwide</span>
+                </div>
+            </div>
+            
+            <div class="visit-us">
+                <h3>Visit Our Flagship Branch</h3>
+                <div class="branch-image">
+                    <img src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="2moreFitness Branch">
+                    <div class="branch-info">
+                        <h4>Main Branch: BGC, Taguig</h4>
+                        <p>Open Daily: 5AM - 11PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-main">
+            <div class="footer-brand">
+                <h3 class="footer-logo">2more<span>Fitness</span></h3>
+                <p class="footer-tagline">Affordable. Accessible. Authentic.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-links-grid">
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#plans">Plans</a></li>
+                        <li><a href="#franchise">Franchise</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Business</h4>
+                    <ul>
+                        <li><a href="#">Upgrade Your Gym</a></li>
+                        <li><a href="#">Tech</a></li>
+                        <li><a href="#corporate">Corporate</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="tel:0212345678">(02) 1234-5678</a></li>
+                        <li><a href="mailto:info@2morefitness.com">info@2morefitness.com</a></li>
+                        <li><span>Open Daily: 5AM - 11PM</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; 2024 2moreFitness. All rights reserved.</p>
+            <div class="footer-legal">
+                <a href="#">Privacy Policy</a>
+                <span class="divider">•</span>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* ===== Color Scheme & Variables ===== */
+    :root {
+        --primary: #000000;
+        --secondary: #FF6B00;
+        --secondary-dark: #E55A00;
+        --accent: #00A8FF;
+        --light: #F8F9FA;
+        --dark: #1A1A1A;
+        --gray: #666666;
+        --light-gray: #E0E0E0;
+        --white: #FFFFFF;
+        
+        /* Updated font variables to match image */
+        --font-heading: 'Montserrat', sans-serif;
+        --font-script: 'Dancing Script', cursive;
+        --font-body: 'Poppins', sans-serif;
+        --font-details: 'Inter', sans-serif;
+        
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.15);
+        --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.2);
+        --radius: 8px;
+        --radius-lg: 12px;
+        --radius-xl: 16px;
+        --transition: all 0.3s ease;
+    }
+    
+    /* ===== Base Styles ===== */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: var(--font-body);
+        line-height: 1.6;
+        color: var(--primary);
+        background: var(--white);
+        overflow-x: hidden;
+    }
+    
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+    
+    .section {
+        padding: 80px 0;
+    }
+    
+    .bg-light {
+        background: var(--secondary);
+    }
+    
+    /* ===== Header & Navigation ===== */
+    .header {
+        background: var(--white);
+        padding: 15px 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: var(--shadow);
+    }
+    
+    .nav-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .logo-text {
+        font-family: var(--font-heading);
+        font-weight: 900;
+        font-size: 1.8rem;
+        color: var(--primary);
+        letter-spacing: -0.5px;
+    }
+    
+    .logo-highlight {
+        color: var(--secondary);
+    }
+    
+    .nav-menu {
+        display: flex;
+        gap: 20px;
+        list-style: none;
+        align-items: center;
+    }
+    
+    .nav-link {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 8px 16px;
+        border-radius: var(--radius);
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .nav-link i {
+        color: var(--secondary);
+        font-size: 0.9rem;
+    }
+    
+    .nav-link:hover {
+        color: var(--secondary);
+        background: rgba(255, 107, 0, 0.1);
+    }
+    
+    .nav-cta {
+        background: var(--secondary);
+        color: var(--white) !important;
+        padding: 10px 20px !important;
+    }
+    
+    .nav-cta:hover {
+        background: var(--secondary-dark);
+        transform: translateY(-2px);
+    }
+    
+    .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        color: var(--primary);
+        cursor: pointer;
+    }
+    
+    .mobile-menu {
+        display: none;
+        background: var(--white);
+        padding: 20px;
+        border-top: 1px solid var(--light-gray);
+    }
+    
+    .mobile-menu.active {
+        display: block;
+    }
+    
+    .mobile-nav-link {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: var(--primary);
+        text-decoration: none;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .mobile-cta {
+        background: var(--secondary);
+        color: var(--white) !important;
+        text-align: center;
+        border-radius: var(--radius);
+        margin-top: 15px;
+    }
+    
+    /* ===== Hero Section ===== */
+    .hero {
+        background: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), 
+                    url('https://images.unsplash.com/photo-1534438327276-14e5300c3a48?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        color: var(--white);
+        padding: 100px 0;
+        position: relative;
+    }
+    
+    .hero-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+    }
+    
+    .hero-tagline {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 40px;
+        background: rgba(255, 107, 0, 0.2);
+        backdrop-filter: blur(10px);
+        padding: 12px 24px;
+        border-radius: 30px;
+        border: 1px solid rgba(255, 107, 0, 0.3);
+    }
+    
+    .hashtag {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: var(--secondary);
+    }
+    
+    /* UPDATED HERO HEADLINE STYLES TO MATCH IMAGE */
+    .hero-headline {
+        margin-bottom: 40px;
+    }
+    
+    .hero-headline .line1 {
+        display: block;
+        font-family: var(--font-heading);
+        font-size: 4rem; /* Larger font like in image */
+        font-weight: 900; /* Black weight like in image */
+        line-height: 1;
+        margin-bottom: 5px;
+        text-transform: uppercase;
+        letter-spacing: 2px; /* Slight letter spacing for bold effect */
+        color: var(--white);
+    }
+    
+    .hero-headline .line2 {
+        display: block;
+        font-family: var(--font-script); /* Script font like in image */
+        font-size: 3.2rem; /* Slightly smaller than top line */
+        font-weight: 700; /* Bold script */
+        line-height: 1;
+        margin-top: -5px; /* Bring closer to top line */
+        text-transform: none; /* No uppercase for script */
+        color: var(--secondary);
+    }
+    
+    .hero-images-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 30px;
+        margin: 40px 0;
+    }
+    
+    .main-hero-image {
+        position: relative;
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        height: 350px;
+    }
+    
+    .main-hero-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .main-hero-image:hover img {
+        transform: scale(1.05);
+    }
+    
+    .image-caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        padding: 20px;
+        color: white;
+        text-align: left;
+    }
+    
+    .image-caption h3 {
+        color: white;
+        margin-bottom: 5px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .image-caption i {
+        color: var(--secondary);
+    }
+    
+    .hero-side-images {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .side-image {
+        position: relative;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        flex: 1;
+    }
+    
+    .side-image img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .side-image:hover img {
+        transform: scale(1.1);
+    }
+    
+    .side-caption {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        background: var(--secondary);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+    }
+    
+    .hero-description {
+        max-width: 800px;
+        margin: 40px auto;
+    }
+    
+    .hero-description p {
+        font-size: 1.1rem;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.7;
+        margin-bottom: 30px;
+    }
+    
+    .hero-benefits {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-top: 30px;
+    }
+    
+    .benefit-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: var(--radius);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        text-align: left;
+    }
+    
+    .benefit-item i {
+        font-size: 1.5rem;
+        color: var(--secondary);
+    }
+    
+    .benefit-item h4 {
+        color: white;
+        margin-bottom: 5px;
+        font-size: 1rem;
+    }
+    
+    .benefit-item p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+    
+    .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin: 40px 0;
+        flex-wrap: wrap;
+    }
+    
+    .stat-card {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: var(--radius-lg);
+        padding: 20px;
+        min-width: 150px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: var(--transition);
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-5px);
+        background: rgba(255, 255, 255, 0.15);
+    }
+    
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        background: var(--secondary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        color: var(--white);
+    }
+    
+    .stat-content {
+        text-align: left;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--white);
+        line-height: 1;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.8);
+        letter-spacing: 1px;
+    }
+    
+    .hero-cta {
+        margin-top: 40px;
+    }
+    
+    .cta-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+    
+    .cta-note {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    /* ===== Gym Preview ===== */
+    .gym-preview {
+        background: var(--light);
+    }
+    
+    .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        margin: 40px 0;
+    }
+    
+    .preview-card {
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+    }
+    
+    .preview-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .preview-image {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+    }
+    
+    .preview-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .preview-card:hover .preview-image img {
+        transform: scale(1.1);
+    }
+    
+    .preview-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        padding: 15px;
+        color: white;
+    }
+    
+    .preview-overlay h4 {
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1rem;
+    }
+    
+    .preview-overlay i {
+        color: var(--secondary);
+    }
+    
+    .preview-content {
+        padding: 25px;
+    }
+    
+    .preview-content h3 {
+        color: var(--primary);
+        margin-bottom: 10px;
+        font-size: 1.3rem;
+    }
+    
+    .preview-content p {
+        color: var(--gray);
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+    
+    .preview-cta {
+        text-align: center;
+        margin-top: 40px;
+    }
+    
+    /* ===== Features Section ===== */
+    .section-header {
+        text-align: center;
+        margin-bottom: 60px;
+    }
+    
+    .section-header h2 {
+        font-size: 2.5rem;
+        margin-bottom: 15px;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .section-header h2:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background: var(--secondary);
+    }
+    
+    .section-header p {
+        max-width: 600px;
+        margin: 0 auto;
+        color: var(--gray);
+        font-size: 1.1rem;
+    }
+    
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+    }
+    
+    .feature-card {
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+    }
+    
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .feature-image {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+    }
+    
+    .feature-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .feature-card:hover .feature-image img {
+        transform: scale(1.1);
+    }
+    
+    .feature-icon-overlay {
+        position: absolute;
+        bottom: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 50px;
+        background: var(--secondary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--white);
+        font-size: 1.2rem;
+        border: 4px solid var(--white);
+        z-index: 2;
+    }
+    
+    .feature-content {
+        padding: 40px 25px 25px;
+        text-align: center;
+    }
+    
+    .feature-content h3 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+        color: var(--primary);
+    }
+    
+    .feature-content p {
+        color: var(--gray);
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    
+    .feature-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 15px;
+        border-top: 1px solid var(--light-gray);
+    }
+    
+    .price-tag,
+    .location-count,
+    .equipment-count,
+    .trainer-count {
+        background: rgba(255, 107, 0, 0.1);
+        color: var(--secondary);
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+    
+    .feature-link {
+        color: var(--secondary);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: var(--transition);
+    }
+    
+    .feature-link:hover {
+        gap: 10px;
+    }
+    
+    .additional-benefits {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-top: 60px;
+        padding: 40px;
+        background: var(--white);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow);
+    }
+    
+    .benefit-box {
+        text-align: center;
+        padding: 20px;
+    }
+    
+    .benefit-box i {
+        font-size: 2rem;
+        color: var(--secondary);
+        margin-bottom: 15px;
+    }
+    
+    .benefit-box h4 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+        color: var(--primary);
+    }
+    
+    .benefit-box p {
+        color: var(--gray);
+        font-size: 0.9rem;
+    }
+    
+    /* ===== Success Stories ===== */
+    .success-stories {
+        background: var(--light);
+    }
+    
+    .stories-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+    
+    .story-card {
+        background: var(--white);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: var(--transition);
+    }
+    
+    .story-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .story-image {
+        height: 200px;
+        overflow: hidden;
+    }
+    
+    .story-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .story-card:hover .story-image img {
+        transform: scale(1.1);
+    }
+    
+    .story-content {
+        padding: 25px;
+    }
+    
+    .story-content h3 {
+        color: var(--primary);
+        margin-bottom: 15px;
+    }
+    
+    .story-content p {
+        color: var(--gray);
+        font-style: italic;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    
+    .story-author {
+        border-top: 1px solid var(--light-gray);
+        padding-top: 15px;
+    }
+    
+    .story-author strong {
+        display: block;
+        color: var(--primary);
+        margin-bottom: 5px;
+    }
+    
+    .story-author span {
+        color: var(--gray);
+        font-size: 0.9rem;
+    }
+    
+    /* ===== Plans Section ===== */
+    .plans-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+    
+    .plan-card {
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 40px 30px;
+        text-align: center;
+        box-shadow: var(--shadow);
+        border: 2px solid var(--light-gray);
+        position: relative;
+        transition: var(--transition);
+    }
+    
+    .plan-card:hover {
+        transform: translateY(-10px);
+        box-shadow: var(--shadow-lg);
+    }
+    
+    .plan-card.popular {
+        border-color: var(--secondary);
+        transform: scale(1.05);
+    }
+    
+    .plan-card.popular:hover {
+        transform: scale(1.05) translateY(-10px);
+    }
+    
+    .plan-badge {
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--secondary);
+        color: var(--white);
+        padding: 6px 20px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .plan-header {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--light-gray);
+    }
+    
+    .plan-header h3 {
+        font-size: 1.6rem;
+        color: var(--primary);
+    }
+    
+    .plan-price {
+        margin-top: 15px;
+    }
+    
+    .amount {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: var(--primary);
+    }
+    
+    .period {
+        color: var(--gray);
+        font-size: 1rem;
+    }
+    
+    .plan-features {
+        list-style: none;
+        margin: 30px 0;
+        padding: 0;
+        text-align: left;
+    }
+    
+    .plan-features li {
+        padding: 10px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--gray);
+    }
+    
+    .plan-features li i {
+        color: var(--secondary);
+    }
+    
+    /* ===== Buttons ===== */
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 12px 24px;
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        border: none;
+        border-radius: var(--radius);
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    
+    .btn-primary {
+        background: var(--secondary);
+        color: var(--white);
+    }
+    
+    .btn-primary:hover {
+        background: var(--secondary-dark);
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    .btn-secondary {
+        background: transparent;
+        color: var(--white);
+        border: 2px solid var(--white);
+    }
+    
+    .btn-secondary:hover {
+        background: var(--white);
+        color: var(--primary);
+        transform: translateY(-3px);
+    }
+    
+    .btn-outline {
+        background: transparent;
+        color: var(--primary);
+    
+    }
+    
+    .btn-outline:hover {
+        background: var(--secondary);
+        border-color: var(--secondary);
+        color: var(--white);
+        transform: translateY(-3px);
+    }
+    
+    .btn-lg {
+        padding: 15px 30px;
+        font-size: 1.1rem;
+    }
+    
+    /* ===== Franchise Section ===== */
+    .franchise-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+    }
+    
+    .franchise-image {
+        position: relative;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+    }
+    
+    .franchise-image img {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    
+    .franchise-image:hover img {
+        transform: scale(1.05);
+    }
+    
+    .franchise-image-overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        padding: 30px;
+        color: white;
+    }
+    
+    .franchise-image-overlay h3 {
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 5px;
+    }
+    
+    .franchise-text h2 {
+        font-size: 2.2rem;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    
+    .franchise-text h2:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 60px;
+        height: 3px;
+        background: var(--secondary);
+    }
+    
+    .franchise-text p {
+        color: var(--gray);
+        line-height: 1.7;
+        margin-bottom: 30px;
+    }
+    
+    .franchise-stats {
+        display: flex;
+        gap: 30px;
+        margin: 30px 0;
+    }
+    
+    .franchise-stat {
+        text-align: center;
+    }
+    
+    .franchise-stat .stat-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: var(--secondary);
+        line-height: 1;
+    }
+    
+    .franchise-stat .stat-label {
+        font-size: 0.9rem;
+        color: var(--gray);
+        margin-top: 5px;
+    }
+    
+    /* ===== Corporate Section ===== */
+    .corporate {
+        background: linear-gradient(135deg, var(--secondary), var(--secondary-dark));
+        color: var(--white);
+        text-align: center;
+    }
+    
+    .corporate-content h2 {
+        color: var(--white);
+        margin-bottom: 20px;
+    }
+    
+    .corporate-content p {
+        max-width: 600px;
+        margin: 0 auto 40px;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1.1rem;
+    }
+    
+    .corporate-benefits {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin: 40px 0;
+        flex-wrap: wrap;
+    }
+    
+    .corporate-benefit {
+        text-align: center;
+        max-width: 200px;
+    }
+    
+    .corporate-benefit i {
+        font-size: 2.5rem;
+        color: var(--white);
+        margin-bottom: 15px;
+    }
+    
+    .corporate-benefit h4 {
+        color: var(--white);
+        margin-bottom: 10px;
+    }
+    
+    .corporate-benefit p {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9rem;
+        margin: 0;
+    }
+    
+    /* ===== Contact Section ===== */
+    .contact {
+        text-align: center;
+    }
+    
+    .contact h2 {
+        margin-bottom: 15px;
+    }
+    
+    .contact p {
+        color: var(--gray);
+        margin-bottom: 40px;
+        font-size: 1.1rem;
+    }
+    
+    .contact-info {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin: 40px 0;
+        flex-wrap: wrap;
+    }
+    
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 1.1rem;
+    }
+    
+    .contact-item i {
+        color: var(--secondary);
+        font-size: 1.3rem;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 107, 0, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .visit-us {
+        margin-top: 60px;
+    }
+    
+    .visit-us h3 {
+        margin-bottom: 20px;
+    }
+    
+    .branch-image {
+        position: relative;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    
+    .branch-image img {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+    }
+    
+    .branch-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        padding: 20px;
+        color: white;
+        text-align: left;
+    }
+    
+    .branch-info h4 {
+        color: white;
+        margin-bottom: 5px;
+    }
+    
+    .branch-info p {
+        color: rgba(255, 255, 255, 0.8);
+        margin: 0;
+        font-size: 0.9rem;
+    }
+    
+    /* ===== Footer ===== */
+    .footer {
+        background: var(--dark);
+        color: var(--white);
+        padding: 60px 0 30px;
+    }
+    
+    .footer-main {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 60px;
+        margin-bottom: 50px;
+    }
+    
+    .footer-logo {
+        font-size: 2.2rem;
+        font-weight: 900;
+        color: var(--white);
+        margin-bottom: 10px;
+    }
+    
+    .footer-logo span {
+        color: var(--secondary);
+    }
+    
+    .footer-tagline {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 20px;
+        line-height: 1.4;
+    }
+    
+    .social-links {
+        display: flex;
+        gap: 12px;
+    }
+    
+    .social-links a {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+    }
+    
+    .social-links a:hover {
+        background: var(--secondary);
+        transform: translateY(-2px);
+    }
+    
+    .footer-links-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+    }
+    
+    .footer-column h4 {
+        font-size: 0.9rem;
+        color: var(--white);
+        margin-bottom: 20px;
+        letter-spacing: 1px;
+    }
+    
+    .footer-column ul {
+        list-style: none;
+    }
+    
+    .footer-column ul li {
+        margin-bottom: 10px;
+    }
+    
+    .footer-column a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        transition: var(--transition);
+    }
+    
+    .footer-column a:hover {
+        color: var(--secondary);
+        padding-left: 5px;
+    }
+    
+    .footer-bottom {
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding-top: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .footer-bottom p {
+        color: rgba(255, 255, 255, 0.5);
+        font-size: 0.85rem;
+    }
+    
+    .footer-legal {
+        display: flex;
+        gap: 15px;
+    }
+    
+    .footer-legal a {
+        color: rgba(255, 255, 255, 0.7);
+        text-decoration: none;
+        font-size: 0.85rem;
+    }
+    
+    .footer-legal a:hover {
+        color: var(--secondary);
+    }
+    
+    .divider {
+        color: rgba(255, 255, 255, 0.3);
+    }
+    
+    /* ===== Responsive Design ===== */
+    @media (max-width: 1024px) {
+        .hero-headline .line1 {
+            font-size: 3.2rem;
+        }
+        
+        .hero-headline .line2 {
+            font-size: 2.8rem;
+        }
+        
+        .hero-images-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .franchise-content {
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+        
+        .footer-main {
+            grid-template-columns: 1fr;
+            gap: 40px;
+        }
+        
+        .plan-card.popular {
+            transform: none;
+        }
+        
+        .plan-card.popular:hover {
+            transform: translateY(-10px);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .section {
+            padding: 60px 0;
+        }
+        
+        .hero {
+            padding: 80px 0;
+        }
+        
+        .hero-headline .line1 {
+            font-size: 2.5rem;
+        }
+        
+        .hero-headline .line2 {
+            font-size: 2.2rem;
+        }
+        
+        .nav-desktop {
+            display: none;
+        }
+        
+        .mobile-menu-btn {
+            display: block;
+        }
+        
+        .hero-benefits {
+            grid-template-columns: 1fr;
+        }
+        
+        .hero-stats {
+            gap: 20px;
+        }
+        
+        .stat-card {
+            min-width: 130px;
+            padding: 15px;
+        }
+        
+        .cta-buttons {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .btn {
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .features-grid,
+        .plans-grid,
+        .stories-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .corporate-benefits {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .contact-info {
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .footer-links-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .footer-bottom {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .hero-headline .line1 {
+            font-size: 2rem;
+        }
+        
+        .hero-headline .line2 {
+            font-size: 1.8rem;
+        }
+        
+        .section-header h2 {
+            font-size: 2rem;
+        }
+        
+        .hero-stats {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        .franchise-stats {
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .footer-links-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .logo-text {
+            font-size: 1.4rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        
+        if (mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', function() {
+                mobileMenu.classList.toggle('active');
+                this.innerHTML = mobileMenu.classList.contains('active') 
+                    ? '<i class="fas fa-times"></i>' 
+                    : '<i class="fas fa-bars"></i>';
+            });
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                }
+            });
+            
+            // Close mobile menu when clicking on a link
+            document.querySelectorAll('.mobile-nav-link').forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileMenu.classList.remove('active');
+                    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+                });
+            });
+        }
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href === '#' || href === '') return;
+                
+                const target = document.querySelector(href);
+                if (target) {
+                    e.preventDefault();
+                    window.scrollTo({
+                        top: target.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Add animation to elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        // Observe cards for animation
+        document.querySelectorAll('.feature-card, .preview-card, .story-card, .plan-card').forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+        
+        // Hero stats counter animation
+        const statNumbers = document.querySelectorAll('.stat-number');
+        statNumbers.forEach(stat => {
+            const target = parseInt(stat.textContent);
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    stat.textContent = target + (stat.textContent.includes('+') ? '+' : '');
+                    clearInterval(timer);
+                } else {
+                    stat.textContent = Math.floor(current) + (stat.textContent.includes('+') ? '+' : '');
+                }
+            }, 30);
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ class.name }} - 2moreFitness{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container" style="max-width: 800px;">
+        <div class="card">
+            <div class="card-content" style="padding: 3rem;">
+                <h2>{{ class.name }}</h2>
+                <span class="badge badge-{{ class.difficulty }}">{{ class.get_difficulty_display }}</span>
+                
+                <div style="margin: 2rem 0;">
+                    <h4>About This Class</h4>
+                    <p>{{ class.description }}</p>
+                </div>
+                
+                <div class="grid grid-2" style="margin: 2rem 0;">
+                    <div>
+                        <h5>Schedule</h5>
+                        <p>{{ class.get_day_of_week_display }}s at {{ class.time|time:"g:i A" }}</p>
+                    </div>
+                    
+                    <div>
+                        <h5>Duration</h5>
+                        <p>{{ class.duration }} minutes</p>
+                    </div>
+                    
+                    <div>
+                        <h5>Instructor</h5>
+                        <p><a href="{% url 'trainer_detail' class.trainer.id %}">{{ class.trainer.user.get_full_name }}</a></p>
+                    </div>
+                    
+                    <div>
+                        <h5>Availability</h5>
+                        <p>{{ class.enrolled_count }}/{{ class.max_capacity }} enrolled</p>
+                    </div>
+                </div>
+                
+                {% if user.is_authenticated %}
+                    {% if is_enrolled %}
+                        <a href="{% url 'unenroll_class' class.id %}" class="btn btn-danger" style="width: 100%;">Unenroll from Class</a>
+                    {% elif class.is_full %}
+                        <button class="btn btn-secondary" style="width: 100%;" disabled>Class Full</button>
+                    {% else %}
+                        <a href="{% url 'enroll_class' class.id %}" class="btn btn-primary" style="width: 100%;">Enroll Now</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'register' %}" class="btn btn-primary" style="width: 100%;">Join to Enroll</a>
+                {% endif %}
+                
+                <div style="margin-top: 2rem; text-align: center;">
+                    <a href="{% url 'class_list' %}">← Back to Classes</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
